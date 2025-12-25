@@ -1,25 +1,19 @@
-# Build stage
+﻿FROM mcr.microsoft.com/dotnet/aspnet:8.0 AS base
+WORKDIR /app
+EXPOSE 80
+EXPOSE 443
+
 FROM mcr.microsoft.com/dotnet/sdk:8.0 AS build
 WORKDIR /src
+COPY AssociazioneETS.API.csproj ./
+RUN dotnet restore "AssociazioneETS.API.csproj"
+COPY . .
+RUN dotnet build "AssociazioneETS.API.csproj" -c Release -o /app/build
 
-# Copy csproj and restore dependencies
-COPY *.csproj ./
-RUN dotnet restore
+FROM build AS publish
+RUN dotnet publish "AssociazioneETS.API.csproj" -c Release -o /app/publish
 
-# Copy everything else and build
-COPY . ./
-RUN dotnet publish -c Release -o /app/publish
-
-# Runtime stage
-FROM mcr.microsoft.com/dotnet/aspnet:8.0
+FROM base AS final
 WORKDIR /app
-COPY --from=build /app/publish .
-
-# Expose port
-EXPOSE 8080
-
-# Set environment variable
-ENV ASPNETCORE_URLS=http://+:8080
-
-# Run the app
+COPY --from=publish /app/publish .
 ENTRYPOINT ["dotnet", "AssociazioneETS.API.dll"]
