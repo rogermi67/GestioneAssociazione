@@ -81,7 +81,6 @@ app.UseAuthorization();
 
 app.MapControllers();
 
-app.MapGet("/", () => "OK");
 
 app.MapGet("/", () => new { 
     status = "online", 
