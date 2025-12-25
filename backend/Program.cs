@@ -69,11 +69,10 @@ builder.Services.AddAuthentication(options =>
 var app = builder.Build();
 
 // Configure the HTTP request pipeline
-if (app.Environment.IsDevelopment())
-{
+
     app.UseSwagger();
     app.UseSwaggerUI();
-}
+
 
 app.UseCors("AllowFrontend");
 
@@ -83,4 +82,12 @@ app.UseAuthorization();
 app.MapControllers();
 
 app.MapGet("/", () => "OK");
+
+app.MapGet("/", () => new { 
+    status = "online", 
+    app = "Gestionale ETS API",
+    version = "1.0",
+    swagger = "/swagger"
+});
+
 app.Run();
