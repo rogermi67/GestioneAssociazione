@@ -28,15 +28,15 @@ builder.Services.AddScoped<ISociService, SociService>();
 builder.Services.AddScoped<IRiunioniService, RiunioniService>();
 builder.Services.AddScoped<IEventiService, EventiService>();
 
-// CORS - Leggi origins da variabili ambiente
-var allowedOrigins = builder.Configuration["ALLOWED_ORIGINS"] ?? "http://localhost:5173";
-var origins = allowedOrigins.Split(',').Select(o => o.Trim()).ToArray();
-
+// CORS - Temporaneamente hardcoded
 builder.Services.AddCors(options =>
 {
     options.AddPolicy("AllowFrontend", policy =>
     {
-        policy.WithOrigins(origins)
+        policy.WithOrigins(
+                "https://gestione-associazione.vercel.app",
+                "http://localhost:5173"
+              )
               .AllowAnyMethod()
               .AllowAnyHeader()
               .AllowCredentials();
@@ -96,5 +96,6 @@ app.MapGet("/debug/cors", () => new
     allowedOrigins = builder.Configuration["ALLOWED_ORIGINS"],
     allConfig = builder.Configuration.AsEnumerable().Where(x => x.Key.Contains("ORIGIN") || x.Key.Contains("FRONTEND"))
 });
+
 
 app.Run();
