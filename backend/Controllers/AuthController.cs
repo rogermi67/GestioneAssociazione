@@ -34,53 +34,57 @@ public class AuthController : ControllerBase
         return Ok(new ApiResponse<LoginResponse>(true, result, "Login effettuato con successo"));
     }
 
-    [HttpPost("register")]
-    [AllowAnonymous]
-    public async Task<ActionResult<ApiResponse<LoginResponse>>> Register([FromBody] RegisterRequest request)
+[HttpPost("register")]
+[AllowAnonymous]
+public async Task<ActionResult<ApiResponse<LoginResponse>>> Register([FromBody] RegisterRequest request)
+{
+    // Se Username è vuoto, usa Email come Username
+    if (string.IsNullOrWhiteSpace(request.Username))
     {
-        // Validazione
-        if (string.IsNullOrWhiteSpace(request.Email) || 
-            string.IsNullOrWhiteSpace(request.Password) ||
-            string.IsNullOrWhiteSpace(request.Username))
-        {
-            return BadRequest(new ApiResponse<LoginResponse>(
-                false, 
-                null, 
-                "Email, username e password sono obbligatori"
-            ));
-        }
-
-        if (request.Password.Length < 6)
-        {
-            return BadRequest(new ApiResponse<LoginResponse>(
-                false, 
-                null, 
-                "La password deve essere di almeno 6 caratteri"
-            ));
-        }
-
-        if (await _authService.EmailExistsAsync(request.Email))
-        {
-            return BadRequest(new ApiResponse<LoginResponse>(
-                false, 
-                null, 
-                "Email già registrata"
-            ));
-        }
-
-        var result = await _authService.RegisterAsync(request);
-
-        if (result == null)
-        {
-            return BadRequest(new ApiResponse<LoginResponse>(
-                false, 
-                null, 
-                "Errore durante la registrazione"
-            ));
-        }
-
-        return Ok(new ApiResponse<LoginResponse>(true, result, "Registrazione completata con successo"));
+        request.Username = request.Email;
     }
+
+    // Validazione
+    if (string.IsNullOrWhiteSpace(request.Email) || 
+        string.IsNullOrWhiteSpace(request.Password))
+    {
+        return BadRequest(new ApiResponse<LoginResponse>(
+            false, 
+            null, 
+            "Email e password sono obbligatori"
+        ));
+    }
+
+    if (request.Password.Length < 6)
+    {
+        return BadRequest(new ApiResponse<LoginResponse>(
+            false, 
+            null, 
+            "La password deve essere di almeno 6 caratteri"
+        ));
+    }
+
+    if (await _authService.EmailExistsAsync(request.Email))
+    {
+        return BadRequest(new ApiResponse<LoginResponse>(
+            false, 
+            null, 
+            "Email già registrata"
+        ));
+    }
+
+    var result = await _authService.RegisterAsync(request);
+    if (result == null)
+    {
+        return BadRequest(new ApiResponse<LoginResponse>(
+            false, 
+            null, 
+            "Errore durante la registrazione"
+        ));
+    }
+
+    return Ok(new ApiResponse<LoginResponse>(true, result, "Registrazione completata con successo"));
+}
 
     [HttpGet("me")]
     [Authorize]
