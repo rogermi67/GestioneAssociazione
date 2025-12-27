@@ -106,7 +106,7 @@ app.UseRouting(); // Aggiungi questo!
 app.UseAuthentication();
 app.UseAuthorization();
 
-app.MapControllers().RequireCors("AllowFrontend");
+app.MapControllers();
 
 app.MapGet("/", () => new { 
     status = "online", 
