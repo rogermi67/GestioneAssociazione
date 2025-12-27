@@ -91,4 +91,10 @@ app.MapGet("/", () => new {
     swagger = "/swagger"
 });
 
+app.MapGet("/debug/cors", () => new 
+{ 
+    allowedOrigins = builder.Configuration["ALLOWED_ORIGINS"],
+    allConfig = builder.Configuration.AsEnumerable().Where(x => x.Key.Contains("ORIGIN") || x.Key.Contains("FRONTEND"))
+});
+
 app.Run();
