@@ -28,7 +28,7 @@ builder.Services.AddScoped<ISociService, SociService>();
 builder.Services.AddScoped<IRiunioniService, RiunioniService>();
 builder.Services.AddScoped<IEventiService, EventiService>();
 
-// CORS - Temporaneamente hardcoded
+// CORS - HARDCODED per Vercel
 builder.Services.AddCors(options =>
 {
     options.AddPolicy("AllowFrontend", policy =>
@@ -71,11 +71,10 @@ builder.Services.AddAuthentication(options =>
 var app = builder.Build();
 
 // Configure the HTTP request pipeline
+app.UseSwagger();
+app.UseSwaggerUI();
 
-    app.UseSwagger();
-    app.UseSwaggerUI();
-
-
+// IMPORTANTE: CORS deve essere PRIMA di Authentication!
 app.UseCors("AllowFrontend");
 
 app.UseAuthentication();
@@ -83,19 +82,11 @@ app.UseAuthorization();
 
 app.MapControllers();
 
-
 app.MapGet("/", () => new { 
     status = "online", 
     app = "Gestionale ETS API",
     version = "1.0",
     swagger = "/swagger"
 });
-
-app.MapGet("/debug/cors", () => new 
-{ 
-    allowedOrigins = builder.Configuration["ALLOWED_ORIGINS"],
-    allConfig = builder.Configuration.AsEnumerable().Where(x => x.Key.Contains("ORIGIN") || x.Key.Contains("FRONTEND"))
-});
-
 
 app.Run();
