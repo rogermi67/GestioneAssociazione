@@ -7,7 +7,7 @@ using AssociazioneETS.API.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// Add services to the container
+// Services
 builder.Services.AddControllers()
     .AddJsonOptions(options =>
     {
@@ -21,29 +21,26 @@ builder.Services.AddSwaggerGen();
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
     options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection")));
 
-// Services
+// Application Services
 builder.Services.AddScoped<IEmailService, EmailService>();
 builder.Services.AddScoped<IAuthService, AuthService>();
 builder.Services.AddScoped<ISociService, SociService>();
 builder.Services.AddScoped<IRiunioniService, RiunioniService>();
 builder.Services.AddScoped<IEventiService, EventiService>();
 
-// CORS - HARDCODED per Vercel
+// CORS - Configurazione semplice e permissiva
 builder.Services.AddCors(options =>
 {
-    options.AddPolicy("AllowFrontend", policy =>
+    options.AddDefaultPolicy(policy =>
     {
-        policy.WithOrigins(
-                "https://gestione-associazione.vercel.app",
-                "http://localhost:5173"
-              )
+        policy.WithOrigins("https://gestione-associazione.vercel.app", "http://localhost:5173")
               .AllowAnyMethod()
               .AllowAnyHeader()
               .AllowCredentials();
     });
 });
 
-// JWT Authentication
+// JWT
 var jwtKey = builder.Configuration["Jwt:Key"];
 var key = Encoding.ASCII.GetBytes(jwtKey);
 
@@ -70,38 +67,11 @@ builder.Services.AddAuthentication(options =>
 
 var app = builder.Build();
 
-// Middleware CORS completo - gestisce sia preflight che richieste normali
-app.Use(async (context, next) =>
-{
-    var origin = context.Request.Headers["Origin"].ToString();
-    
-    // Se la richiesta viene da Vercel o localhost, aggiungi headers CORS
-    if (origin == "https://gestione-associazione.vercel.app" || origin.Contains("localhost"))
-    {
-        context.Response.Headers.Add("Access-Control-Allow-Origin", origin);
-        context.Response.Headers.Add("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, OPTIONS, PATCH");
-        context.Response.Headers.Add("Access-Control-Allow-Headers", "Content-Type, Authorization, X-Requested-With");
-        context.Response.Headers.Add("Access-Control-Allow-Credentials", "true");
-        
-        // Se è preflight, rispondi subito
-        if (context.Request.Method == "OPTIONS")
-        {
-            context.Response.StatusCode = 200;
-            return;
-        }
-    }
-    
-    await next();
-});
-
-// Configure the HTTP request pipeline
+// Middleware pipeline - ORDINE CRITICO!
 app.UseSwagger();
 app.UseSwaggerUI();
 
-// CORS deve essere il PRIMO middleware (prima di routing!)
-app.UseCors("AllowFrontend");
-
-app.UseRouting(); // Aggiungi questo!
+app.UseCors(); // Usa la policy di default
 
 app.UseAuthentication();
 app.UseAuthorization();
@@ -111,8 +81,7 @@ app.MapControllers();
 app.MapGet("/", () => new { 
     status = "online", 
     app = "Gestionale ETS API",
-    version = "1.0",
-    swagger = "/swagger"
+    version = "1.0"
 });
 
 app.Run();
