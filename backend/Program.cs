@@ -28,13 +28,15 @@ builder.Services.AddScoped<ISociService, SociService>();
 builder.Services.AddScoped<IRiunioniService, RiunioniService>();
 builder.Services.AddScoped<IEventiService, EventiService>();
 
-// CORS - Leggi frontend URL da variabili ambiente
-var frontendUrl = builder.Configuration["FRONTEND_URL"] ?? "http://localhost:5173";
+// CORS - Leggi origins da variabili ambiente
+var allowedOrigins = builder.Configuration["ALLOWED_ORIGINS"] ?? "http://localhost:5173";
+var origins = allowedOrigins.Split(',').Select(o => o.Trim()).ToArray();
+
 builder.Services.AddCors(options =>
 {
     options.AddPolicy("AllowFrontend", policy =>
     {
-        policy.WithOrigins(frontendUrl, "http://localhost:5173")
+        policy.WithOrigins(origins)
               .AllowAnyMethod()
               .AllowAnyHeader()
               .AllowCredentials();
