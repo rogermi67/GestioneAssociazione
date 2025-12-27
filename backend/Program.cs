@@ -74,13 +74,15 @@ var app = builder.Build();
 app.UseSwagger();
 app.UseSwaggerUI();
 
-// IMPORTANTE: CORS deve essere PRIMA di Authentication!
+// CORS deve essere il PRIMO middleware (prima di routing!)
 app.UseCors("AllowFrontend");
+
+app.UseRouting(); // Aggiungi questo!
 
 app.UseAuthentication();
 app.UseAuthorization();
 
-app.MapControllers();
+app.MapControllers().RequireCors("AllowFrontend");
 
 app.MapGet("/", () => new { 
     status = "online", 
