@@ -70,18 +70,27 @@ builder.Services.AddAuthentication(options =>
 
 var app = builder.Build();
 
-// Middleware esplicito per gestire preflight OPTIONS
+// Middleware CORS completo - gestisce sia preflight che richieste normali
 app.Use(async (context, next) =>
 {
-    if (context.Request.Method == "OPTIONS")
+    var origin = context.Request.Headers["Origin"].ToString();
+    
+    // Se la richiesta viene da Vercel o localhost, aggiungi headers CORS
+    if (origin == "https://gestione-associazione.vercel.app" || origin.Contains("localhost"))
     {
-        context.Response.Headers.Add("Access-Control-Allow-Origin", "https://gestione-associazione.vercel.app");
-        context.Response.Headers.Add("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, OPTIONS");
-        context.Response.Headers.Add("Access-Control-Allow-Headers", "Content-Type, Authorization");
+        context.Response.Headers.Add("Access-Control-Allow-Origin", origin);
+        context.Response.Headers.Add("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, OPTIONS, PATCH");
+        context.Response.Headers.Add("Access-Control-Allow-Headers", "Content-Type, Authorization, X-Requested-With");
         context.Response.Headers.Add("Access-Control-Allow-Credentials", "true");
-        context.Response.StatusCode = 200;
-        return;
+        
+        // Se è preflight, rispondi subito
+        if (context.Request.Method == "OPTIONS")
+        {
+            context.Response.StatusCode = 200;
+            return;
+        }
     }
+    
     await next();
 });
 
