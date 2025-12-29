@@ -68,19 +68,30 @@ builder.Services.AddAuthentication(options =>
 var app = builder.Build();
 
 // Middleware OPTIONS - DEVE essere il PRIMO!
+// Middleware CORS globale - headers su OGNI risposta
 app.Use(async (context, next) =>
 {
+    var origin = context.Request.Headers["Origin"].ToString();
+    
+    if (origin == "https://gestione-associazione.vercel.app" || origin.Contains("localhost"))
+    {
+        // Aggiungi headers CORS a TUTTE le risposte
+        context.Response.OnStarting(() => {
+            context.Response.Headers.Add("Access-Control-Allow-Origin", origin);
+            context.Response.Headers.Add("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, OPTIONS");
+            context.Response.Headers.Add("Access-Control-Allow-Headers", "Content-Type, Authorization");
+            context.Response.Headers.Add("Access-Control-Allow-Credentials", "true");
+            return Task.CompletedTask;
+        });
+    }
+    
+    // Se è OPTIONS, rispondi subito
     if (context.Request.Method == "OPTIONS")
     {
         context.Response.StatusCode = 204;
-        context.Response.Headers.Add("Access-Control-Allow-Origin", "https://gestione-associazione.vercel.app");
-        context.Response.Headers.Add("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, OPTIONS");
-        context.Response.Headers.Add("Access-Control-Allow-Headers", "Content-Type, Authorization");
-        context.Response.Headers.Add("Access-Control-Allow-Credentials", "true");
-        context.Response.Headers.Add("Access-Control-Max-Age", "86400");
-        await context.Response.CompleteAsync();
         return;
     }
+    
     await next();
 });
 
