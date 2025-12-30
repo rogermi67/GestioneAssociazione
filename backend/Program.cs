@@ -67,6 +67,21 @@ builder.Services.AddAuthentication(options =>
 
 var app = builder.Build();
 
+// Auto-run migrations on startup
+using (var scope = app.Services.CreateScope())
+{
+    var db = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
+    try 
+    {
+        db.Database.Migrate();
+        Console.WriteLine("✅ Database migrations applied successfully"); 
+    }
+    catch (Exception ex)
+    {
+        Console.WriteLine($"❌ Migration error: {ex.Message}");
+    }
+}
+
 // Middleware OPTIONS - DEVE essere il PRIMO!
 // Middleware CORS globale - headers su OGNI risposta
 app.Use(async (context, next) =>
