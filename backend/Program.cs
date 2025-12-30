@@ -65,20 +65,24 @@ builder.Services.AddAuthentication(options =>
     };
 });
 
-var app = builder.Build();
-
-// Auto-run migrations on startup
 using (var scope = app.Services.CreateScope())
 {
     var db = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
+    
+    // Log della connection string (primi 50 caratteri per debug)
+    var connString = builder.Configuration.GetConnectionString("DefaultConnection");
+    Console.WriteLine($"🔍 Using connection string: {connString?.Substring(0, Math.Min(50, connString.Length ?? 0))}...");
+    
     try 
     {
+        Console.WriteLine("🔄 Applying database migrations...");
         db.Database.Migrate();
-        Console.WriteLine("✅ Database migrations applied successfully"); 
+        Console.WriteLine("✅ Database migrations applied successfully");
     }
     catch (Exception ex)
     {
         Console.WriteLine($"❌ Migration error: {ex.Message}");
+        Console.WriteLine($"Stack trace: {ex.StackTrace}");
     }
 }
 
