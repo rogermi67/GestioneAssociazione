@@ -76,7 +76,16 @@ using (var scope = app.Services.CreateScope())
 {
     var db = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
     
-    Console.WriteLine($"🔍 Using connection string: {connectionString?.Substring(0, Math.Min(50, connectionString?.Length ?? 0))}...");
+    // Debug dettagliato
+    Console.WriteLine($"🔍 connectionString variable: '{connectionString}'");
+    Console.WriteLine($"🔍 connectionString length: {connectionString?.Length ?? 0}");
+    Console.WriteLine($"🔍 DATABASE_URL from config: '{builder.Configuration["DATABASE_URL"]}'");
+    Console.WriteLine($"🔍 DefaultConnection from config: '{builder.Configuration.GetConnectionString("DefaultConnection")}'");
+    
+    // Prova a ottenere la connessione dal DbContext
+    var actualConnString = db.Database.GetConnectionString();
+    Console.WriteLine($"🔍 Actual DbContext connection string: '{actualConnString}'");
+    Console.WriteLine($"🔍 Actual length: {actualConnString?.Length ?? 0}");
     
     try 
     {
