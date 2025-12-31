@@ -31,7 +31,7 @@ builder.Services.AddScoped<ISociService, SociService>();
 builder.Services.AddScoped<IRiunioniService, RiunioniService>();
 builder.Services.AddScoped<IEventiService, EventiService>();
 
-// CORS - Configurazione semplice e permissiva
+// CORS
 builder.Services.AddCors(options =>
 {
     options.AddDefaultPolicy(policy =>
@@ -68,13 +68,15 @@ builder.Services.AddAuthentication(options =>
     };
 });
 
+// BUILD APP - IMPORTANTISSIMO!
+var app = builder.Build();
+
+// Auto-run migrations
 using (var scope = app.Services.CreateScope())
 {
     var db = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
     
-    // Log della connection string (primi 50 caratteri per debug)
-    var connString = builder.Configuration.GetConnectionString("DefaultConnection");
-    Console.WriteLine($"🔍 Using connection string: {connString?.Substring(0, Math.Min(50, connString.Length ?? 0))}...");
+    Console.WriteLine($"🔍 Using connection string: {connectionString?.Substring(0, Math.Min(50, connectionString?.Length ?? 0))}...");
     
     try 
     {
@@ -85,19 +87,16 @@ using (var scope = app.Services.CreateScope())
     catch (Exception ex)
     {
         Console.WriteLine($"❌ Migration error: {ex.Message}");
-        Console.WriteLine($"Stack trace: {ex.StackTrace}");
     }
 }
 
-// Middleware OPTIONS - DEVE essere il PRIMO!
-// Middleware CORS globale - headers su OGNI risposta
+// Middleware CORS
 app.Use(async (context, next) =>
 {
     var origin = context.Request.Headers["Origin"].ToString();
     
     if (origin == "https://gestione-associazione.vercel.app" || origin.Contains("localhost"))
     {
-        // Aggiungi headers CORS a TUTTE le risposte
         context.Response.OnStarting(() => {
             context.Response.Headers.Add("Access-Control-Allow-Origin", origin);
             context.Response.Headers.Add("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, OPTIONS");
@@ -107,7 +106,6 @@ app.Use(async (context, next) =>
         });
     }
     
-    // Se è OPTIONS, rispondi subito
     if (context.Request.Method == "OPTIONS")
     {
         context.Response.StatusCode = 204;
@@ -117,15 +115,11 @@ app.Use(async (context, next) =>
     await next();
 });
 
-// Middleware pipeline - ORDINE CRITICO!
 app.UseSwagger();
 app.UseSwaggerUI();
-
-app.UseCors(); // Usa la policy di default
-
+app.UseCors();
 app.UseAuthentication();
 app.UseAuthorization();
-
 app.MapControllers();
 
 app.MapGet("/", () => new { 
