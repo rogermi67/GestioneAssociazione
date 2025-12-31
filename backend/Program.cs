@@ -20,12 +20,25 @@ builder.Services.AddSwaggerGen();
 // Database
 // Database - Converti URI PostgreSQL in formato Npgsql
 // Database - Npgsql supporta URI PostgreSQL nativamente!
-var connectionString = builder.Configuration["DATABASE_URL"] 
+// Database - Converti URI a formato Npgsql con gestione porta
+var databaseUrl = builder.Configuration["DATABASE_URL"] 
     ?? builder.Configuration.GetConnectionString("DefaultConnection");
+
+string connectionString;
+if (!string.IsNullOrEmpty(databaseUrl) && databaseUrl.StartsWith("postgresql://"))
+{
+    var uri = new Uri(databaseUrl);
+    var port = uri.Port > 0 ? uri.Port : 5432; // Default PostgreSQL port
+    var userInfo = uri.UserInfo.Split(':');
+    connectionString = $"Host={uri.Host};Port={port};Database={uri.AbsolutePath.TrimStart('/')};Username={userInfo[0]};Password={userInfo[1]};SSL Mode=Require;Trust Server Certificate=true";
+}
+else
+{
+    connectionString = databaseUrl;
+}
 
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
     options.UseNpgsql(connectionString));
-
 // Application Services
 builder.Services.AddScoped<IEmailService, EmailService>();
 builder.Services.AddScoped<IAuthService, AuthService>();
