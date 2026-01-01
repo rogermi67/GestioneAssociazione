@@ -42,6 +42,7 @@ builder.Services.AddDbContext<ApplicationDbContext>(options =>
     {
         npgsqlOptions.EnableLegacyTimestampBehavior();
     }));
+
 // Application Services
 builder.Services.AddScoped<IEmailService, EmailService>();
 builder.Services.AddScoped<IAuthService, AuthService>();
