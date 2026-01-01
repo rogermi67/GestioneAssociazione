@@ -37,11 +37,10 @@ else
     connectionString = databaseUrl;
 }
 
+AppContext.SetSwitch("Npgsql.EnableLegacyTimestampBehavior", true);
+
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
-    options.UseNpgsql(connectionString, npgsqlOptions =>
-    {
-        npgsqlOptions.EnableLegacyTimestampBehavior();
-    }));
+    options.UseNpgsql(connectionString));
 
 // Application Services
 builder.Services.AddScoped<IEmailService, EmailService>();
