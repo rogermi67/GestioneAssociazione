@@ -119,7 +119,7 @@ app.Use(async (context, next) =>
 {
     var origin = context.Request.Headers["Origin"].ToString();
     
-    if (origin == "https://gestione-associazione.vercel.app" || origin.Contains("localhost"))
+     if (!string.IsNullOrEmpty(origin))
     {
         context.Response.OnStarting(() => {
             context.Response.Headers.Add("Access-Control-Allow-Origin", origin);
