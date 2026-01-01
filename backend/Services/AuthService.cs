@@ -31,9 +31,8 @@ public class AuthService : IAuthService
 
     public async Task<LoginResponse?> LoginAsync(LoginRequest request)
     {
-        var user = await _context.Users
-            .Include(u => u.Socio)
-            .FirstOrDefaultAsync(u => u.Email == request.Email);
+var user = await _context.Users
+    .SingleOrDefaultAsync(u => u.Username == request.Username || u.Email == request.Username);
 
         if (user == null || !VerifyPassword(request.Password, user.PasswordHash))
         {
