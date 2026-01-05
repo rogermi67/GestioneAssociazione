@@ -50,7 +50,38 @@ public class SociController : ControllerBase
 
         return Ok(new ApiResponse<object>(true, soci, null));
     }
+[HttpGet("inattivi")]
+[Authorize]
+public async Task<ActionResult<ApiResponse<object>>> GetInattivi()
+{
+    var soci = await _context.Soci
+        .Include(s => s.Carica)
+        .Where(s => s.StatoSocio != "Attivo")
+        .OrderBy(s => s.Cognome)
+        .ThenBy(s => s.Nome)
+        .Select(s => new
+        {
+            s.SocioId,
+            s.Nome,
+            s.Cognome,
+            NomeCompleto = s.Nome + " " + s.Cognome,
+            s.CodiceFiscale,
+            s.DataNascita,
+            Eta = DateTime.Now.Year - s.DataNascita.Year,
+            s.Email,
+            s.Telefono,
+            s.Indirizzo,
+            s.StatoSocio,
+            s.DataIscrizione,
+            s.DataCessazione,
+            s.CaricaId,
+            Carica = s.Carica != null ? new { s.Carica.CaricaId, s.Carica.Nome } : null,
+            s.Note
+        })
+        .ToListAsync();
 
+    return Ok(new ApiResponse<object>(true, soci, null));
+}
     [HttpGet("{id}")]
     [Authorize]
     public async Task<ActionResult<ApiResponse<object>>> GetById(int id)
