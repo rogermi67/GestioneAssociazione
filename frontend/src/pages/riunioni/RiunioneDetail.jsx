@@ -616,25 +616,36 @@ function EditRiunioneModal({ show, onClose, riunione, onSuccess }) {
 
 function AddPartecipantiModal({ show, onClose, riunioneId, onSuccess }) {
   const [soci, setSoci] = useState([])
+  const [partecipanti, setPartecipanti] = useState([])
   const [selectedSoci, setSelectedSoci] = useState([])
   const [loading, setLoading] = useState(false)
 
   useEffect(() => {
     if (show) {
-      loadSoci()
+      loadData()
     }
   }, [show])
 
-  const loadSoci = async () => {
+  const loadData = async () => {
     try {
-      const response = await sociAPI.getAll()
-      setSoci(response.data.data || [])
+      const [sociRes, partRes] = await Promise.all([
+        sociAPI.getAll(),
+        riunioniAPI.getPartecipazioni(riunioneId)
+      ])
+      setSoci(sociRes.data.data || [])
+      setPartecipanti(partRes.data.data || [])
     } catch (error) {
-      toast.error('Errore nel caricamento dei soci')
+      toast.error('Errore nel caricamento dei dati')
     }
   }
 
   if (!show) return null
+
+  // Filtra: solo soci attivi NON già presenti
+  const sociDisponibili = soci.filter(socio => 
+    socio.statoSocio === 'Attivo' && 
+    !partecipanti.some(p => p.socioId === socio.socioId)
+  )
 
   const handleSubmit = async (e) => {
     e.preventDefault()
@@ -670,38 +681,72 @@ function AddPartecipantiModal({ show, onClose, riunioneId, onSuccess }) {
     )
   }
 
+  const handleSelectAll = () => {
+    setSelectedSoci(sociDisponibili.map(s => s.socioId.toString()))
+  }
+
+  const handleDeselectAll = () => {
+    setSelectedSoci([])
+  }
+
   return (
     <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
       <div className="bg-white rounded-lg p-6 max-w-2xl w-full max-h-[80vh] overflow-y-auto">
         <h3 className="text-xl font-bold mb-4">Aggiungi Partecipanti</h3>
         
-        <form onSubmit={handleSubmit}>
-          <div className="space-y-2 mb-4 max-h-96 overflow-y-auto">
-            {soci.map((socio) => (
-              <label key={socio.socioId} className="flex items-center p-3 hover:bg-gray-50 rounded cursor-pointer">
-                <input
-                  type="checkbox"
-                  checked={selectedSoci.includes(socio.socioId.toString())}
-                  onChange={() => toggleSocio(socio.socioId.toString())}
-                  className="mr-3 h-5 w-5"
-                />
-                <div className="flex-1">
-                  <div className="font-medium">{socio.nomeCompleto}</div>
-                  {socio.carica && <div className="text-sm text-gray-500">{socio.carica.nome}</div>}
-                </div>
-              </label>
-            ))}
-          </div>
+        {sociDisponibili.length === 0 ? (
+          <p className="text-gray-500 text-center py-8">
+            Tutti i soci attivi sono già stati aggiunti alla riunione
+          </p>
+        ) : (
+          <form onSubmit={handleSubmit}>
+            {/* Pulsanti Seleziona/Deseleziona Tutti */}
+            <div className="flex gap-2 mb-4 pb-4 border-b">
+              <button
+                type="button"
+                onClick={handleSelectAll}
+                className="btn-secondary flex-1"
+                disabled={loading}
+              >
+                ✓ Seleziona tutti ({sociDisponibili.length})
+              </button>
+              <button
+                type="button"
+                onClick={handleDeselectAll}
+                className="btn-secondary flex-1"
+                disabled={loading}
+              >
+                ✗ Deseleziona tutti
+              </button>
+            </div>
 
-          <div className="flex flex-col sm:flex-row gap-2 justify-end border-t pt-4">
-            <button type="button" onClick={onClose} className="btn-secondary" disabled={loading}>
-              Annulla
-            </button>
-            <button type="submit" className="btn-primary" disabled={loading}>
-              {loading ? 'Aggiunta...' : `Aggiungi ${selectedSoci.length} Partecipanti`}
-            </button>
-          </div>
-        </form>
+            <div className="space-y-2 mb-4 max-h-96 overflow-y-auto">
+              {sociDisponibili.map((socio) => (
+                <label key={socio.socioId} className="flex items-center p-3 hover:bg-gray-50 rounded cursor-pointer">
+                  <input
+                    type="checkbox"
+                    checked={selectedSoci.includes(socio.socioId.toString())}
+                    onChange={() => toggleSocio(socio.socioId.toString())}
+                    className="mr-3 h-5 w-5"
+                  />
+                  <div className="flex-1">
+                    <div className="font-medium">{socio.nomeCompleto}</div>
+                    {socio.carica && <div className="text-sm text-gray-500">{socio.carica.nome}</div>}
+                  </div>
+                </label>
+              ))}
+            </div>
+
+            <div className="flex flex-col sm:flex-row gap-2 justify-end border-t pt-4">
+              <button type="button" onClick={onClose} className="btn-secondary" disabled={loading}>
+                Annulla
+              </button>
+              <button type="submit" className="btn-primary" disabled={loading}>
+                {loading ? 'Aggiunta...' : `Aggiungi ${selectedSoci.length} Partecipanti`}
+              </button>
+            </div>
+          </form>
+        )}
       </div>
     </div>
   )
