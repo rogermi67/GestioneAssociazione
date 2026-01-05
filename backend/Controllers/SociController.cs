@@ -24,7 +24,6 @@ public class SociController : ControllerBase
     {
         var soci = await _context.Soci
             .Include(s => s.Carica)
-            .Where(s => s.StatoSocio == "Attivo")
             .OrderBy(s => s.Cognome)
             .ThenBy(s => s.Nome)
             .Select(s => new
