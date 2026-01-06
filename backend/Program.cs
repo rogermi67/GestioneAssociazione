@@ -54,7 +54,10 @@ builder.Services.AddCors(options =>
 {
     options.AddDefaultPolicy(policy =>
     {
-        policy.WithOrigins("https://gestione-associazione.vercel.app", "http://localhost:5173")
+        policy.WithOrigins(
+            "https://gestione-associazione.vercel.app",
+            "https://gestione-associazione-9c21m4xk2-rogermis-projects.vercel.app"
+        )
               .AllowAnyMethod()
               .AllowAnyHeader()
               .AllowCredentials();
