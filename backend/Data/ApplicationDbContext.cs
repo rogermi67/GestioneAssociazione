@@ -24,6 +24,7 @@ public class ApplicationDbContext : DbContext
     public DbSet<PartecipazioneEvento> PartecipazioniEventi { get; set; }
     public DbSet<Notifica> Notifiche { get; set; }
     public DbSet<Impostazione> Impostazioni { get; set; }
+    public DbSet<PushSubscription> PushSubscriptions { get; set; }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
