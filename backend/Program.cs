@@ -56,7 +56,8 @@ builder.Services.AddCors(options =>
     {
         policy.WithOrigins(
             "https://gestione-associazione.vercel.app",
-            "https://gestione-associazione-9c21m4xk2-rogermis-projects.vercel.app"
+            "https://gestione-associazione-git-main-rogermis-projects.vercel.app"
+			"https://gestione-associazione-juok2of2m-rogermis-projects.vercel.app"
         )
               .AllowAnyMethod()
               .AllowAnyHeader()
