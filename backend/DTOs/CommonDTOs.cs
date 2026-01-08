@@ -172,3 +172,18 @@ public class UpdateStatusRequest
 {
     public bool Attivo { get; set; }
 }
+// Push Notification DTOs
+public class PushSubscriptionDto
+{
+    public string Endpoint { get; set; } = string.Empty;
+    public string P256dh { get; set; } = string.Empty;
+    public string Auth { get; set; } = string.Empty;
+}
+
+public class SendPushNotificationDto
+{
+    public string Title { get; set; } = string.Empty;
+    public string Body { get; set; } = string.Empty;
+    public string? Icon { get; set; }
+    public string? Url { get; set; }
+}
