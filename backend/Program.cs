@@ -92,6 +92,22 @@ builder.Services.AddAuthentication(options =>
 // BUILD APP - IMPORTANTISSIMO!
 var app = builder.Build();
 
+// Apply migrations automatically on startup
+using (var scope = app.Services.CreateScope())
+{
+    var services = scope.ServiceProvider;
+    try
+    {
+        var context = services.GetRequiredService<ApplicationDbContext>();
+        context.Database.Migrate();
+        Console.WriteLine("✅ Database migrations applied successfully");
+    }
+    catch (Exception ex)
+    {
+        Console.WriteLine($"❌ Error applying migrations: {ex.Message}");
+    }
+}
+
 // Auto-run migrations
 using (var scope = app.Services.CreateScope())
 {
