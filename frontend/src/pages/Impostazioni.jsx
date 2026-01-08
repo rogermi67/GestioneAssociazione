@@ -4,6 +4,7 @@ import { useState, useEffect } from 'react'
 import { toast } from 'react-toastify'
 import { impostazioniAPI } from '../services/api'
 import AdminOnly from '../components/AdminOnly'
+import NotificationToggle from '../components/NotificationToggle'
 
 export default function Impostazioni() {
   const [settings, setSettings] = useState({
@@ -117,6 +118,7 @@ export default function Impostazioni() {
     <div className="space-y-6">
       <div className="flex justify-between items-center">
         <h1 className="text-3xl font-bold text-gray-900">Impostazioni Associazione</h1>
+		<NotificationToggle />  {/* <-- AGGIUNGI QUESTA RIGA */}
         <AdminOnly>
           <button onClick={handleSave} disabled={saving} className="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 disabled:opacity-50">
             {saving ? 'Salvataggio...' : 'Salva Modifiche'}

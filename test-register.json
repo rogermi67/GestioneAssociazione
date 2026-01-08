@@ -1,0 +1,8 @@
+@"
+{
+  "email": "test3@test.com",
+  "password": "Test123!",
+  "nome": "Test",
+  "cognome": "User"
+}
+"@ | Out-File -Encoding UTF8 test-register.json

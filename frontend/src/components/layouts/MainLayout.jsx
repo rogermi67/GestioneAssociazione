@@ -3,7 +3,7 @@ import { useAuthStore } from '../../stores/authStore'
 import AdminOnly from '../AdminOnly'
 import { 
   FiHome, FiUsers, FiCalendar, FiFileText, 
-  FiSettings, FiLogOut, FiMenu, FiX, FiAward, FiUserCheck
+  FiSettings, FiLogOut, FiMenu, FiX, FiAward, FiUserCheck, FiBell
 } from 'react-icons/fi'
 import { useState } from 'react'
 
@@ -18,14 +18,15 @@ export default function MainLayout() {
     navigate('/login')
   }
 
-  const menuItems = [
-    { name: 'Dashboard', icon: FiHome, path: '/', adminOnly: false },
-    { name: 'Soci', icon: FiUsers, path: '/soci', adminOnly: false },
-    { name: 'Riunioni', icon: FiFileText, path: '/riunioni', adminOnly: false },
-    { name: 'Cariche', icon: FiAward, path: '/cariche', adminOnly: false },
-    { name: 'Utenti', icon: FiUserCheck, path: '/utenti', adminOnly: true },
-    { name: 'Impostazioni', icon: FiSettings, path: '/impostazioni', adminOnly: false },
-  ]
+const menuItems = [
+  { name: 'Dashboard', icon: FiHome, path: '/', adminOnly: false },
+  { name: 'Soci', icon: FiUsers, path: '/soci', adminOnly: false },
+  { name: 'Riunioni', icon: FiFileText, path: '/riunioni', adminOnly: false },
+  { name: 'Cariche', icon: FiAward, path: '/cariche', adminOnly: false },
+  { name: 'Utenti', icon: FiUserCheck, path: '/utenti', adminOnly: true },
+  { name: 'Notifiche Push', icon: FiBell, path: '/notifiche', adminOnly: true },  // <-- AGGIUNGI QUESTA
+  { name: 'Impostazioni', icon: FiSettings, path: '/impostazioni', adminOnly: false },
+]
 
   const isActive = (path) => {
     return location.pathname === path || location.pathname.startsWith(path + '/')

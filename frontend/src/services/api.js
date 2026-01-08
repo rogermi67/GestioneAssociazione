@@ -186,3 +186,10 @@ export const emailAPI = {
   send: (riunioneId, data) => api.post('/email/send/${riunioneId}', data),
   sendCustom: (data) => api.post('/email/send-custom', data)
 }
+
+// Push Notifications API
+export const pushNotificationAPI = {
+  subscribe: (subscription) => api.post('/pushnotification/subscribe', subscription),
+  send: (notification) => api.post('/pushnotification/send', notification),
+  unsubscribe: () => api.delete('/pushnotification/unsubscribe')
+}

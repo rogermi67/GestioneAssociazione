@@ -16,6 +16,7 @@ import Cariche from './pages/Cariche'
 import Impostazioni from './pages/Impostazioni'
 import ImpostazioniEmail from './pages/ImpostazioniEmail'
 import Utenti from './pages/Utenti'
+import SendNotification from './pages/admin/SendNotification'
 
 function ProtectedRoute({ children }) {
   const { isAuthenticated } = useAuthStore()
@@ -70,6 +71,7 @@ function App() {
           <Route path="/impostazioni" element={<Impostazioni />} />
           <Route path="/impostazioni/email" element={<ImpostazioniEmail />} />
           <Route path="/utenti" element={<Utenti />} />
+		  <Route path="/notifiche" element={<SendNotification />} />
         </Route>
       </Routes>
       
