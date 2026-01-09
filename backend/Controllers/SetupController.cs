@@ -1,5 +1,6 @@
 using Microsoft.AspNetCore.Mvc;
-using Npgsql;
+using Microsoft.EntityFrameworkCore;
+using AssociazioneETS.API.Data;
 
 namespace AssociazioneETS.API.Controllers;
 
@@ -7,23 +8,18 @@ namespace AssociazioneETS.API.Controllers;
 [Route("api/[controller]")]
 public class SetupController : ControllerBase
 {
-    private readonly IConfiguration _configuration;
+    private readonly ApplicationDbContext _context;
 
-    public SetupController(IConfiguration configuration)
+    public SetupController(ApplicationDbContext context)
     {
-        _configuration = configuration;
+        _context = context;
     }
 
     [HttpPost("create-push-table")]
     public async Task<IActionResult> CreatePushTable()
     {
-        var connectionString = _configuration.GetConnectionString("DefaultConnection");
-        
         try
         {
-            await using var connection = new NpgsqlConnection(connectionString);
-            await connection.OpenAsync();
-
             var sql = @"
                 CREATE TABLE IF NOT EXISTS push_subscriptions (
                     subscription_id SERIAL PRIMARY KEY,
@@ -42,8 +38,7 @@ public class SetupController : ControllerBase
                     ON push_subscriptions(user_id);
             ";
 
-            await using var command = new NpgsqlCommand(sql, connection);
-            await command.ExecuteNonQueryAsync();
+            await _context.Database.ExecuteSqlRawAsync(sql);
 
             return Ok(new { success = true, message = "Tabella push_subscriptions creata con successo!" });
         }
