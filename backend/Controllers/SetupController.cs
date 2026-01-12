@@ -47,4 +47,18 @@ public class SetupController : ControllerBase
             return BadRequest(new { success = false, message = ex.Message });
         }
     }
-}
+
+    [HttpGet("check-subscriptions")]  // <-- AGGIUNGI QUI
+    public async Task<IActionResult> CheckSubscriptions()
+    {
+        var subscriptions = await _context.PushSubscriptions.ToListAsync();
+        return Ok(new { 
+            count = subscriptions.Count,
+            subscriptions = subscriptions.Select(s => new {
+                s.SubscriptionId,
+                s.UserId,
+                Endpoint = s.Endpoint.Substring(0, Math.Min(50, s.Endpoint.Length)) + "..."
+            })
+        });
+    }
+}  // <-- Chiusura classe
