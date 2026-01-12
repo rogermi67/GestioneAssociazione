@@ -60,16 +60,22 @@ public class PushNotificationController : ControllerBase
     [Authorize(Roles = "Admin")]
     public async Task<ActionResult<ApiResponse<object>>> SendNotification([FromBody] SendPushNotificationDto dto)
     {
+        Console.WriteLine("🔔 SendNotification API called!");
+        Console.WriteLine($"📧 Title: {dto.Title}, Body: {dto.Body}");
+
         var vapidPublicKey = _configuration["Vapid:PublicKey"];
         var vapidPrivateKey = _configuration["Vapid:PrivateKey"];
         var vapidSubject = _configuration["Vapid:Subject"];
 
         if (string.IsNullOrEmpty(vapidPublicKey) || string.IsNullOrEmpty(vapidPrivateKey))
         {
+            Console.WriteLine("❌ VAPID keys non configurate!");
             return BadRequest(new ApiResponse<object>(false, null, "VAPID keys non configurate"));
         }
 
         var subscriptions = await _context.PushSubscriptions.ToListAsync();
+        Console.WriteLine($"📊 Found {subscriptions.Count} subscriptions");
+
         var successCount = 0;
         var failCount = 0;
 
@@ -77,6 +83,7 @@ public class PushNotificationController : ControllerBase
 
         foreach (var sub in subscriptions)
         {
+            Console.WriteLine($"🔔 Sending to subscription #{sub.SubscriptionId} (User #{sub.UserId})...");
             try
             {
                 var pushSubscription = new WebPush.PushSubscription(
@@ -100,21 +107,26 @@ public class PushNotificationController : ControllerBase
                 });
 
                 await webPushClient.SendNotificationAsync(pushSubscription, payload, vapidDetails);
+                Console.WriteLine($"✅ Sent successfully to subscription #{sub.SubscriptionId}");
                 successCount++;
             }
             catch (WebPush.WebPushException ex) when (ex.StatusCode == System.Net.HttpStatusCode.Gone)
             {
+                Console.WriteLine($"⚠️ Subscription #{sub.SubscriptionId} expired (HTTP 410 Gone), removing...");
                 // Subscription scaduta, rimuovila
                 _context.PushSubscriptions.Remove(sub);
                 failCount++;
             }
-            catch
+            catch (Exception ex)
             {
+                Console.WriteLine($"❌ Error sending to subscription #{sub.SubscriptionId}: {ex.Message}");
                 failCount++;
             }
         }
 
         await _context.SaveChangesAsync();
+
+        Console.WriteLine($"📊 Summary: {successCount} successes, {failCount} failures");
 
         return Ok(new ApiResponse<object>(
             true,
