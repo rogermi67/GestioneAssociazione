@@ -6,6 +6,10 @@ import {
   FiSettings, FiLogOut, FiMenu, FiX, FiAward, FiUserCheck, FiBell
 } from 'react-icons/fi'
 import { useState } from 'react'
+import { 
+  FiHome, FiUsers, FiCalendar, FiFileText, 
+  FiSettings, FiLogOut, FiMenu, FiX, FiAward, FiUserCheck, FiBell
+} from 'react-icons/fi'
 
 export default function MainLayout() {
   const { user, logout, isAdmin } = useAuthStore()
@@ -23,6 +27,7 @@ const menuItems = [
   { name: 'Soci', icon: FiUsers, path: '/soci', adminOnly: false },
   { name: 'Riunioni', icon: FiFileText, path: '/riunioni', adminOnly: false },
   { name: 'Cariche', icon: FiAward, path: '/cariche', adminOnly: false },
+  { name: 'Calendario', icon: FiCalendar, path: '/calendario', adminOnly: false },
   { name: 'Utenti', icon: FiUserCheck, path: '/utenti', adminOnly: true },
   { name: 'Notifiche Push', icon: FiBell, path: '/notifiche', adminOnly: true },  // <-- AGGIUNGI QUESTA
   { name: 'Impostazioni', icon: FiSettings, path: '/impostazioni', adminOnly: false },

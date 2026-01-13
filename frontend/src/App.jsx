@@ -17,6 +17,7 @@ import Impostazioni from './pages/Impostazioni'
 import ImpostazioniEmail from './pages/ImpostazioniEmail'
 import Utenti from './pages/Utenti'
 import SendNotification from './pages/admin/SendNotification'
+import CalendarioEventi from './pages/eventi/CalendarioEventi'
 
 function ProtectedRoute({ children }) {
   const { isAuthenticated } = useAuthStore()
@@ -72,6 +73,7 @@ function App() {
           <Route path="/impostazioni/email" element={<ImpostazioniEmail />} />
           <Route path="/utenti" element={<Utenti />} />
 		  <Route path="/notifiche" element={<SendNotification />} />
+		  <Route path="/calendario" element={<CalendarioEventi />} />
         </Route>
       </Routes>
       
