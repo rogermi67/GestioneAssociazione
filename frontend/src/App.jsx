@@ -19,7 +19,6 @@ import Utenti from './pages/Utenti'
 import SendNotification from './pages/admin/SendNotification'
 import CalendarioEventi from './pages/eventi/CalendarioEventi'
 import EventoForm from './pages/eventi/EventoForm'
-import EventoForm from './pages/eventi/EventoForm'
 import EventoDetail from './pages/eventi/EventoDetail'
 
 function ProtectedRoute({ children }) {
