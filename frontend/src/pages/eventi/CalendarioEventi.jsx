@@ -3,6 +3,7 @@ import { Calendar, dateFnsLocalizer } from 'react-big-calendar'
 import { format, parse, startOfWeek, getDay } from 'date-fns'
 import { it } from 'date-fns/locale'
 import { eventiAPI } from '../../services/api'
+import { riunioniAPI } from '../../services/api'  // <-- AGGIUNGI
 import { toast } from 'react-toastify'
 import { FiFilter, FiCalendar } from 'react-icons/fi'
 import 'react-big-calendar/lib/css/react-big-calendar.css'
@@ -31,17 +32,36 @@ export default function CalendarioEventi() {
     fetchEventi()
   }, [])
 
-  const fetchEventi = async () => {
-    try {
-      const response = await eventiAPI.getAll()
-      setEventi(response.data.data || [])
-    } catch (error) {
-      console.error('Errore caricamento eventi:', error)
-      toast.error('Errore nel caricamento degli eventi')
-    } finally {
-      setLoading(false)
-    }
+const fetchEventi = async () => {
+  try {
+    // Fetch eventi
+    const eventiResponse = await eventiAPI.getAll()
+    const eventi = eventiResponse.data.data || []
+    
+    // Fetch riunioni
+    const riunioniResponse = await riunioniAPI.getAll()
+    const riunioni = riunioniResponse.data.data || []
+    
+    // Combina eventi e riunioni
+    const allItems = [
+      ...eventi.map(e => ({ ...e, tipo: 'evento' })),
+      ...riunioni.map(r => ({ 
+        ...r, 
+        tipo: 'riunione',
+        titolo: r.titolo || 'Riunione',
+        dataInizio: r.dataOra,
+        tipoEvento: 'Riunione'
+      }))
+    ]
+    
+    setEventi(allItems)
+  } catch (error) {
+    console.error('Errore caricamento:', error)
+    toast.error('Errore nel caricamento del calendario')
+  } finally {
+    setLoading(false)
   }
+}
 
   // Converti eventi per react-big-calendar
   const calendarEvents = useMemo(() => {
@@ -70,7 +90,8 @@ export default function CalendarioEventi() {
       'Evento': { backgroundColor: '#3b82f6', borderColor: '#2563eb' },
       'Festa': { backgroundColor: '#ec4899', borderColor: '#db2777' },
       'Rievocazione': { backgroundColor: '#8b5cf6', borderColor: '#7c3aed' },
-      'Corso': { backgroundColor: '#10b981', borderColor: '#059669' }
+      'Corso': { backgroundColor: '#10b981', borderColor: '#059669' },
+	  'Riunione': { backgroundColor: '#f59e0b', borderColor: '#d97706' } 
     }
     
     const color = colors[event.resource.tipoEvento] || colors['Evento']
@@ -171,6 +192,10 @@ export default function CalendarioEventi() {
           <div className="flex items-center gap-2">
             <div className="w-4 h-4 rounded" style={{backgroundColor: '#10b981'}}></div>
             <span className="text-sm">Corso</span>
+          </div>
+		  <div className="flex items-center gap-2">
+            <div className="w-4 h-4 rounded" style={{backgroundColor: '#f59e0b'}}></div>
+            <span className="text-sm">Riunione</span>
           </div>
         </div>
       </div>
