@@ -45,15 +45,22 @@ const fetchEventi = async () => {
     console.log('📋 Riunioni ricevute:', riunioni)
     
     const allItems = [
-      ...eventi.map(e => ({ ...e, tipo: 'evento' })),
-      ...riunioni.map(r => ({ 
-        ...r, 
-        tipo: 'riunione',
-        titolo: r.titolo || 'Riunione',
-        dataInizio: r.dataOra,
-        tipoEvento: 'Riunione'
-      }))
-    ]
+  ...eventi.map(e => ({ ...e, tipo: 'evento' })),
+  ...riunioni.map(r => {
+    // Combina dataRiunione + oraInizio/oraFine
+    const dataInizio = new Date(`${r.dataRiunione.split('T')[0]}T${r.oraInizio}:00`)
+    const dataFine = new Date(`${r.dataRiunione.split('T')[0]}T${r.oraFine}:00`)
+    
+    return {
+      ...r,
+      tipo: 'riunione',
+      titolo: r.tipoRiunione || 'Riunione',
+      dataInizio: dataInizio.toISOString(),
+      dataFine: dataFine.toISOString(),
+      tipoEvento: 'Riunione'
+    }
+  })
+]
     
     console.log('✅ Tutti gli item combinati:', allItems)
     setEventi(allItems)
