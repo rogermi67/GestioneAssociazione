@@ -194,11 +194,5 @@ export const pushNotificationAPI = {
   unsubscribe: () => api.delete('/pushnotification/unsubscribe')
 }
 
-// Eventi API
-export const eventiAPI = {
-  getAll: () => api.get('/eventi'),
-  getById: (id) => api.get(`/eventi/${id}`),
-  create: (evento) => api.post('/eventi', evento),
-  update: (id, evento) => api.put(`/eventi/${id}`, evento),
-  delete: (id) => api.delete(`/eventi/${id}`)
+
 }
