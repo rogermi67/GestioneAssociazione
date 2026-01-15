@@ -34,15 +34,16 @@ export default function CalendarioEventi() {
 
 const fetchEventi = async () => {
   try {
-    // Fetch eventi
+    console.log('🔍 Fetching eventi...')
     const eventiResponse = await eventiAPI.getAll()
     const eventi = eventiResponse.data.data || []
+    console.log('📅 Eventi ricevuti:', eventi)
     
-    // Fetch riunioni
+    console.log('🔍 Fetching riunioni...')
     const riunioniResponse = await riunioniAPI.getAll()
     const riunioni = riunioniResponse.data.data || []
+    console.log('📋 Riunioni ricevute:', riunioni)
     
-    // Combina eventi e riunioni
     const allItems = [
       ...eventi.map(e => ({ ...e, tipo: 'evento' })),
       ...riunioni.map(r => ({ 
@@ -54,9 +55,10 @@ const fetchEventi = async () => {
       }))
     ]
     
+    console.log('✅ Tutti gli item combinati:', allItems)
     setEventi(allItems)
   } catch (error) {
-    console.error('Errore caricamento:', error)
+    console.error('❌ Errore caricamento:', error)
     toast.error('Errore nel caricamento del calendario')
   } finally {
     setLoading(false)
