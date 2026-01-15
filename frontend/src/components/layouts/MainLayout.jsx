@@ -6,10 +6,7 @@ import {
   FiSettings, FiLogOut, FiMenu, FiX, FiAward, FiUserCheck, FiBell
 } from 'react-icons/fi'
 import { useState } from 'react'
-import { 
-  FiHome, FiUsers, FiCalendar, FiFileText, 
-  FiSettings, FiLogOut, FiMenu, FiX, FiAward, FiUserCheck, FiBell
-} from 'react-icons/fi'
+
 
 export default function MainLayout() {
   const { user, logout, isAdmin } = useAuthStore()
