@@ -23,6 +23,7 @@ const menuItems = [
   { name: 'Dashboard', icon: FiHome, path: '/', adminOnly: false },
   { name: 'Soci', icon: FiUsers, path: '/soci', adminOnly: false },
   { name: 'Riunioni', icon: FiFileText, path: '/riunioni', adminOnly: false },
+  { name: 'Eventi', icon: FiCalendar, path: '/eventi', adminOnly: false },  // <-- AGGIUNGI
   { name: 'Cariche', icon: FiAward, path: '/cariche', adminOnly: false },
   { name: 'Calendario', icon: FiCalendar, path: '/calendario', adminOnly: false },
   { name: 'Utenti', icon: FiUserCheck, path: '/utenti', adminOnly: true },
