@@ -47,19 +47,31 @@ const fetchEventi = async () => {
     const allItems = [
   ...eventi.map(e => ({ ...e, tipo: 'evento' })),
   ...riunioni.map(r => {
-    // Combina dataRiunione + oraInizio/oraFine
-    const dataInizio = new Date(`${r.dataRiunione.split('T')[0]}T${r.oraInizio}:00`)
-    const dataFine = new Date(`${r.dataRiunione.split('T')[0]}T${r.oraFine}:00`)
-    
-    return {
-      ...r,
-      tipo: 'riunione',
-      titolo: r.tipoRiunione || 'Riunione',
-      dataInizio: dataInizio.toISOString(),
-      dataFine: dataFine.toISOString(),
-      tipoEvento: 'Riunione'
+    try {
+      // Estrai solo la data (YYYY-MM-DD)
+      const dataBase = r.dataRiunione.split('T')[0]
+      
+      // Default ore se mancano
+      const oraInizio = r.oraInizio || '09:00'
+      const oraFine = r.oraFine || '10:00'
+      
+      // Costruisci date ISO valide
+      const dataInizio = `${dataBase}T${oraInizio}:00Z`
+      const dataFine = `${dataBase}T${oraFine}:00Z`
+      
+      return {
+        ...r,
+        tipo: 'riunione',
+        titolo: r.tipoRiunione || 'Riunione',
+        dataInizio: dataInizio,
+        dataFine: dataFine,
+        tipoEvento: 'Riunione'
+      }
+    } catch (err) {
+      console.error('Errore parsing riunione:', r, err)
+      return null
     }
-  })
+  }).filter(Boolean)  // Rimuovi null
 ]
     
     console.log('✅ Tutti gli item combinati:', allItems)
