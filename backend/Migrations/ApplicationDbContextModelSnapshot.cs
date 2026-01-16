@@ -87,7 +87,7 @@ namespace AssociazioneETS.API.Migrations
 
                     b.HasIndex("TodoEventoId");
 
-                    b.ToTable("AssegnazioniTodo");
+                    b.ToTable("AssegnazioniTodo", (string)null);
                 });
 
             modelBuilder.Entity("AssociazioneETS.API.Models.Carica", b =>
@@ -205,7 +205,7 @@ namespace AssociazioneETS.API.Migrations
 
                     b.HasKey("CollaboratoreId");
 
-                    b.ToTable("Collaboratori");
+                    b.ToTable("Collaboratori", (string)null);
                 });
 
             modelBuilder.Entity("AssociazioneETS.API.Models.DeliberaRiunione", b =>
@@ -312,7 +312,7 @@ namespace AssociazioneETS.API.Migrations
 
                     b.HasIndex("SocioId");
 
-                    b.ToTable("documenti");
+                    b.ToTable("documenti", (string)null);
                 });
 
             modelBuilder.Entity("AssociazioneETS.API.Models.DocumentoEvento", b =>
@@ -351,7 +351,7 @@ namespace AssociazioneETS.API.Migrations
 
                     b.HasIndex("EventoId");
 
-                    b.ToTable("DocumentiEventi");
+                    b.ToTable("DocumentiEventi", (string)null);
                 });
 
             modelBuilder.Entity("AssociazioneETS.API.Models.Evento", b =>
@@ -532,7 +532,7 @@ namespace AssociazioneETS.API.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("notifiche");
+                    b.ToTable("notifiche", (string)null);
                 });
 
             modelBuilder.Entity("AssociazioneETS.API.Models.PartecipazioneEvento", b =>
@@ -859,7 +859,7 @@ namespace AssociazioneETS.API.Migrations
 
                     b.HasIndex("SocioId");
 
-                    b.ToTable("soci_cariche");
+                    b.ToTable("soci_cariche", (string)null);
                 });
 
             modelBuilder.Entity("AssociazioneETS.API.Models.TodoEvento", b =>
@@ -900,7 +900,7 @@ namespace AssociazioneETS.API.Migrations
 
                     b.HasIndex("EventoId");
 
-                    b.ToTable("TodoEventi");
+                    b.ToTable("TodoEventi", (string)null);
                 });
 
             modelBuilder.Entity("AssociazioneETS.API.Models.User", b =>

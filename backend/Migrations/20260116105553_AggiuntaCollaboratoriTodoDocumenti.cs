@@ -33,30 +33,30 @@ namespace AssociazioneETS.API.Migrations
                     table.PrimaryKey("PK_Collaboratori", x => x.CollaboratoreId);
                 });
 
-            migrationBuilder.CreateTable(
-                name: "documenti",
-                columns: table => new
-                {
-                    documento_id = table.Column<int>(type: "integer", nullable: false)
-                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
-                    socio_id = table.Column<int>(type: "integer", nullable: false),
-                    tipo_documento = table.Column<string>(type: "character varying(50)", maxLength: 50, nullable: false),
-                    nome_file = table.Column<string>(type: "character varying(200)", maxLength: 200, nullable: false),
-                    path_file = table.Column<string>(type: "text", nullable: false),
-                    data_caricamento = table.Column<DateTime>(type: "timestamp without time zone", nullable: false),
-                    data_scadenza = table.Column<DateTime>(type: "timestamp without time zone", nullable: true)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_documenti", x => x.documento_id);
-                    table.ForeignKey(
-                        name: "FK_documenti_soci_socio_id",
-                        column: x => x.socio_id,
-                        principalTable: "soci",
-                        principalColumn: "socio_id",
-                        onDelete: ReferentialAction.Cascade);
-                });
-
+/* 				migrationBuilder.CreateTable(
+					name: "documenti",
+					columns: table => new
+					{
+						documento_id = table.Column<int>(type: "integer", nullable: false)
+							.Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
+						socio_id = table.Column<int>(type: "integer", nullable: false),
+						tipo_documento = table.Column<string>(type: "character varying(50)", maxLength: 50, nullable: false),
+						nome_file = table.Column<string>(type: "character varying(200)", maxLength: 200, nullable: false),
+						path_file = table.Column<string>(type: "text", nullable: false),
+						data_caricamento = table.Column<DateTime>(type: "timestamp without time zone", nullable: false),
+						data_scadenza = table.Column<DateTime>(type: "timestamp without time zone", nullable: true)
+					},
+					constraints: table =>
+					{
+						table.PrimaryKey("PK_documenti", x => x.documento_id);
+						table.ForeignKey(
+							name: "FK_documenti_soci_socio_id",
+							column: x => x.socio_id,
+							principalTable: "soci",
+							principalColumn: "socio_id",
+							onDelete: ReferentialAction.Cascade);
+					});
+ */
             migrationBuilder.CreateTable(
                 name: "DocumentiEventi",
                 columns: table => new
@@ -82,7 +82,7 @@ namespace AssociazioneETS.API.Migrations
                         onDelete: ReferentialAction.Cascade);
                 });
 
-            migrationBuilder.CreateTable(
+/*             migrationBuilder.CreateTable(
                 name: "notifiche",
                 columns: table => new
                 {
@@ -109,9 +109,9 @@ namespace AssociazioneETS.API.Migrations
                         principalTable: "users",
                         principalColumn: "user_id",
                         onDelete: ReferentialAction.Cascade);
-                });
+                }); */
 
-            migrationBuilder.CreateTable(
+/*             migrationBuilder.CreateTable(
                 name: "soci_cariche",
                 columns: table => new
                 {
@@ -138,7 +138,7 @@ namespace AssociazioneETS.API.Migrations
                         principalTable: "soci",
                         principalColumn: "socio_id",
                         onDelete: ReferentialAction.Cascade);
-                });
+                }); */
 
             migrationBuilder.CreateTable(
                 name: "TodoEventi",
@@ -198,7 +198,7 @@ namespace AssociazioneETS.API.Migrations
                         principalColumn: "socio_id");
                 });
 
-            migrationBuilder.InsertData(
+/*             migrationBuilder.InsertData(
                 table: "cariche",
                 columns: new[] { "carica_id", "descrizione", "nome", "ordine" },
                 values: new object[,]
@@ -210,7 +210,7 @@ namespace AssociazioneETS.API.Migrations
                     { 5, "Membro del consiglio", "Consigliere", 5 },
                     { 6, "Socio fondatore", "Socio Fondatore", 6 },
                     { 7, "Revisore dei conti", "Revisore dei Conti", 7 }
-                });
+                }); */
 
             migrationBuilder.CreateIndex(
                 name: "IX_AssegnazioniTodo_CollaboratoreId",
@@ -227,30 +227,30 @@ namespace AssociazioneETS.API.Migrations
                 table: "AssegnazioniTodo",
                 column: "TodoEventoId");
 
-            migrationBuilder.CreateIndex(
+/*             migrationBuilder.CreateIndex(
                 name: "IX_documenti_socio_id",
                 table: "documenti",
-                column: "socio_id");
+                column: "socio_id"); */
 
             migrationBuilder.CreateIndex(
                 name: "IX_DocumentiEventi_EventoId",
                 table: "DocumentiEventi",
                 column: "EventoId");
 
-            migrationBuilder.CreateIndex(
+/*             migrationBuilder.CreateIndex(
                 name: "IX_notifiche_user_id",
                 table: "notifiche",
-                column: "user_id");
+                column: "user_id"); */
 
-            migrationBuilder.CreateIndex(
+/*             migrationBuilder.CreateIndex(
                 name: "IX_soci_cariche_carica_id",
                 table: "soci_cariche",
-                column: "carica_id");
+                column: "carica_id"); */
 
-            migrationBuilder.CreateIndex(
+/*             migrationBuilder.CreateIndex(
                 name: "IX_soci_cariche_socio_id",
                 table: "soci_cariche",
-                column: "socio_id");
+                column: "socio_id"); */
 
             migrationBuilder.CreateIndex(
                 name: "IX_TodoEventi_EventoId",
