@@ -19,29 +19,32 @@ export default function Navbar() {
               Gestionale ETS
             </Link>
             
-            <div className="hidden md:flex space-x-6">
-              <Link to="/" className="text-gray-700 hover:text-blue-600">
-                Dashboard
-              </Link>
-              <Link to="/soci" className="text-gray-700 hover:text-blue-600">
-                Soci
-              </Link>
-              <Link to="/riunioni" className="text-gray-700 hover:text-blue-600">
-                Riunioni
-              </Link>
-              <Link to="/cariche" className="text-gray-700 hover:text-blue-600">
-                Cariche
-              </Link>
-              <Link to="/impostazioni" className="text-gray-700 hover:text-blue-600">
-                Impostazioni
-              </Link>
-			  <Link to="/utenti" className="text-gray-700 hover:text-blue-600">
-                Utenti
-              </Link>
-<Link to="/collaboratori" className="text-gray-700 hover:text-blue-600">
-              Collaboratori
-            </Link>
-            </div>
+<div className="hidden md:flex space-x-6">
+  <Link to="/" className="text-gray-700 hover:text-blue-600">
+    Dashboard
+  </Link>
+  <Link to="/soci" className="text-gray-700 hover:text-blue-600">
+    Soci
+  </Link>
+  <Link to="/riunioni" className="text-gray-700 hover:text-blue-600">
+    Riunioni
+  </Link>
+  <Link to="/cariche" className="text-gray-700 hover:text-blue-600">
+    Cariche
+  </Link>
+  <Link to="/impostazioni" className="text-gray-700 hover:text-blue-600">
+    Impostazioni
+  </Link>
+  <Link to="/utenti" className="text-gray-700 hover:text-blue-600">
+    Utenti
+  </Link>
+  <Link to="/collaboratori" className="text-gray-700 hover:text-blue-600">
+    Collaboratori
+  </Link>
+  <Link to="/eventi" className="text-gray-700 hover:text-blue-600">
+    Eventi
+  </Link>
+</div>
           </div>
           
           <div className="flex items-center space-x-4">
