@@ -35,10 +35,10 @@ export default function Navbar() {
               <Link to="/impostazioni" className="text-gray-700 hover:text-blue-600">
                 Impostazioni
               </Link>
-			  <Link to="/utenti" className="nav-link">
+			  <Link to="/utenti" className="text-gray-700 hover:text-blue-600">
                 Utenti
               </Link>
-            <Link to="/collaboratori" className="nav-link">
+<Link to="/collaboratori" className="text-gray-700 hover:text-blue-600">
               Collaboratori
             </Link>
             </div>
