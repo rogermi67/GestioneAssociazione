@@ -38,6 +38,9 @@ export default function Navbar() {
 			  <Link to="/utenti" className="nav-link">
                 Utenti
               </Link>
+            <Link to="/collaboratori" className="nav-link">
+              Collaboratori
+            </Link>
             </div>
           </div>
           

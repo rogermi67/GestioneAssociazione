@@ -134,6 +134,33 @@ export const eventiAPI = {
     api.post(`/eventi/${eventoId}/partecipanti/${socioId}`, data),
 }
 
+// Collaboratori API
+export const collaboratoriAPI = {
+  getAll: () => api.get('/collaboratori'),
+  getById: (id) => api.get(`/collaboratori/${id}`),
+  create: (data) => api.post('/collaboratori', data),
+  update: (id, data) => api.put(`/collaboratori/${id}`, data),
+  delete: (id) => api.delete(`/collaboratori/${id}`)
+}
+
+// Todo Eventi API
+export const todoEventiAPI = {
+  getByEvento: (eventoId) => api.get(`/todoeventi/evento/${eventoId}`),
+  create: (data) => api.post('/todoeventi', data),
+  update: (id, data) => api.put(`/todoeventi/${id}`, data),
+  delete: (id) => api.delete(`/todoeventi/${id}`),
+  assegna: (data) => api.post('/todoeventi/assegna', data),
+  rimuoviAssegnazione: (id) => api.delete(`/todoeventi/assegna/${id}`)
+}
+
+// Documenti Eventi API
+export const documentiEventiAPI = {
+  getByEvento: (eventoId) => api.get(`/documentieventi/evento/${eventoId}`),
+  upload: (data) => api.post('/documentieventi', data),
+  delete: (id) => api.delete(`/documentieventi/${id}`),
+  download: (id) => api.get(`/documentieventi/download/${id}`, { responseType: 'blob' })
+}
+
 // Notifiche API
 export const notificheAPI = {
   testConnection: () => api.get('/notifiche/test-connection'),

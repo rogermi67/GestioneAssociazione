@@ -3,6 +3,8 @@ import { useParams, useNavigate, Link } from 'react-router-dom'
 import { eventiAPI } from '../../services/api'
 import { toast } from 'react-toastify'
 import { FiEdit2, FiTrash2, FiArrowLeft, FiCalendar, FiMapPin, FiDollarSign } from 'react-icons/fi'
+import TodoList from '../../components/TodoList'
+import DocumentiEvento from '../../components/DocumentiEvento'
 
 export default function EventoDetail() {
   const { id } = useParams()
@@ -185,6 +187,12 @@ export default function EventoDetail() {
           <p className="text-gray-700 whitespace-pre-wrap">{evento.note}</p>
         </div>
       )}
+	  
+	        {/* Todo e Documenti */}
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mt-6">
+        <TodoList eventoId={id} />
+        <DocumentiEvento eventoId={id} />
+      </div>
     </div>
   )
 }
