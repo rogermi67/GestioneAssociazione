@@ -12,8 +12,8 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace AssociazioneETS.API.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20251229152507_InitialCreate")]
-    partial class InitialCreate
+    [Migration("20260116105553_AggiuntaCollaboratoriTodoDocumenti")]
+    partial class AggiuntaCollaboratoriTodoDocumenti
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -56,7 +56,41 @@ namespace AssociazioneETS.API.Migrations
 
                     b.HasIndex("RiunioneId");
 
-                    b.ToTable("argomenti_riunione");
+                    b.ToTable("argomenti_riunione", null, t =>
+                        {
+                            t.ExcludeFromMigrations();
+                        });
+                });
+
+            modelBuilder.Entity("AssociazioneETS.API.Models.AssegnazioneTodo", b =>
+                {
+                    b.Property<int>("AssegnazioneId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("AssegnazioneId"));
+
+                    b.Property<DateTime>("AssegnatoIl")
+                        .HasColumnType("timestamp without time zone");
+
+                    b.Property<int?>("CollaboratoreId")
+                        .HasColumnType("integer");
+
+                    b.Property<int?>("SocioId")
+                        .HasColumnType("integer");
+
+                    b.Property<int>("TodoEventoId")
+                        .HasColumnType("integer");
+
+                    b.HasKey("AssegnazioneId");
+
+                    b.HasIndex("CollaboratoreId");
+
+                    b.HasIndex("SocioId");
+
+                    b.HasIndex("TodoEventoId");
+
+                    b.ToTable("AssegnazioniTodo");
                 });
 
             modelBuilder.Entity("AssociazioneETS.API.Models.Carica", b =>
@@ -84,7 +118,10 @@ namespace AssociazioneETS.API.Migrations
 
                     b.HasKey("CaricaId");
 
-                    b.ToTable("cariche");
+                    b.ToTable("cariche", null, t =>
+                        {
+                            t.ExcludeFromMigrations();
+                        });
 
                     b.HasData(
                         new
@@ -136,6 +173,42 @@ namespace AssociazioneETS.API.Migrations
                             Nome = "Revisore dei Conti",
                             Ordine = 7
                         });
+                });
+
+            modelBuilder.Entity("AssociazioneETS.API.Models.Collaboratore", b =>
+                {
+                    b.Property<int>("CollaboratoreId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("CollaboratoreId"));
+
+                    b.Property<string>("Azienda")
+                        .HasColumnType("text");
+
+                    b.Property<string>("Cognome")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("timestamp without time zone");
+
+                    b.Property<string>("Email")
+                        .HasColumnType("text");
+
+                    b.Property<string>("Nome")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<string>("Note")
+                        .HasColumnType("text");
+
+                    b.Property<string>("Telefono")
+                        .HasColumnType("text");
+
+                    b.HasKey("CollaboratoreId");
+
+                    b.ToTable("Collaboratori");
                 });
 
             modelBuilder.Entity("AssociazioneETS.API.Models.DeliberaRiunione", b =>
@@ -194,7 +267,10 @@ namespace AssociazioneETS.API.Migrations
 
                     b.HasIndex("RiunioneId");
 
-                    b.ToTable("delibere_riunioni");
+                    b.ToTable("delibere_riunione", null, t =>
+                        {
+                            t.ExcludeFromMigrations();
+                        });
                 });
 
             modelBuilder.Entity("AssociazioneETS.API.Models.Documento", b =>
@@ -207,11 +283,11 @@ namespace AssociazioneETS.API.Migrations
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("DocumentoId"));
 
                     b.Property<DateTime>("DataCaricamento")
-                        .HasColumnType("timestamp with time zone")
+                        .HasColumnType("timestamp without time zone")
                         .HasColumnName("data_caricamento");
 
                     b.Property<DateTime?>("DataScadenza")
-                        .HasColumnType("timestamp with time zone")
+                        .HasColumnType("timestamp without time zone")
                         .HasColumnName("data_scadenza");
 
                     b.Property<string>("NomeFile")
@@ -242,6 +318,45 @@ namespace AssociazioneETS.API.Migrations
                     b.ToTable("documenti");
                 });
 
+            modelBuilder.Entity("AssociazioneETS.API.Models.DocumentoEvento", b =>
+                {
+                    b.Property<int>("DocumentoEventoId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("DocumentoEventoId"));
+
+                    b.Property<long>("Dimensione")
+                        .HasColumnType("bigint");
+
+                    b.Property<int>("EventoId")
+                        .HasColumnType("integer");
+
+                    b.Property<string>("NomeFile")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<string>("PathFile")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<string>("TipoFile")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<DateTime>("UploadedAt")
+                        .HasColumnType("timestamp without time zone");
+
+                    b.Property<int?>("UploadedBy")
+                        .HasColumnType("integer");
+
+                    b.HasKey("DocumentoEventoId");
+
+                    b.HasIndex("EventoId");
+
+                    b.ToTable("DocumentiEventi");
+                });
+
             modelBuilder.Entity("AssociazioneETS.API.Models.Evento", b =>
                 {
                     b.Property<int>("EventoId")
@@ -256,15 +371,15 @@ namespace AssociazioneETS.API.Migrations
                         .HasColumnName("budget");
 
                     b.Property<DateTime>("CreatedAt")
-                        .HasColumnType("timestamp with time zone")
+                        .HasColumnType("timestamp without time zone")
                         .HasColumnName("created_at");
 
                     b.Property<DateTime?>("DataFine")
-                        .HasColumnType("timestamp with time zone")
+                        .HasColumnType("timestamp without time zone")
                         .HasColumnName("data_fine");
 
                     b.Property<DateTime>("DataInizio")
-                        .HasColumnType("timestamp with time zone")
+                        .HasColumnType("timestamp without time zone")
                         .HasColumnName("data_inizio");
 
                     b.Property<string>("Descrizione")
@@ -315,12 +430,15 @@ namespace AssociazioneETS.API.Migrations
                         .HasColumnName("titolo");
 
                     b.Property<DateTime>("UpdatedAt")
-                        .HasColumnType("timestamp with time zone")
+                        .HasColumnType("timestamp without time zone")
                         .HasColumnName("updated_at");
 
                     b.HasKey("EventoId");
 
-                    b.ToTable("eventi");
+                    b.ToTable("eventi", null, t =>
+                        {
+                            t.ExcludeFromMigrations();
+                        });
                 });
 
             modelBuilder.Entity("AssociazioneETS.API.Models.Impostazione", b =>
@@ -336,7 +454,7 @@ namespace AssociazioneETS.API.Migrations
                         .HasColumnName("descrizione");
 
                     b.Property<DateTime>("UpdatedAt")
-                        .HasColumnType("timestamp with time zone")
+                        .HasColumnType("timestamp without time zone")
                         .HasColumnName("updated_at");
 
                     b.Property<string>("Valore")
@@ -348,7 +466,10 @@ namespace AssociazioneETS.API.Migrations
                     b.HasIndex("Chiave")
                         .IsUnique();
 
-                    b.ToTable("impostazioni");
+                    b.ToTable("impostazioni", null, t =>
+                        {
+                            t.ExcludeFromMigrations();
+                        });
                 });
 
             modelBuilder.Entity("AssociazioneETS.API.Models.Notifica", b =>
@@ -361,15 +482,15 @@ namespace AssociazioneETS.API.Migrations
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("NotificaId"));
 
                     b.Property<DateTime>("DataInvio")
-                        .HasColumnType("timestamp with time zone")
+                        .HasColumnType("timestamp without time zone")
                         .HasColumnName("data_invio");
 
                     b.Property<DateTime?>("DataLettura")
-                        .HasColumnType("timestamp with time zone")
+                        .HasColumnType("timestamp without time zone")
                         .HasColumnName("data_lettura");
 
                     b.Property<DateTime?>("DataScadenza")
-                        .HasColumnType("timestamp with time zone")
+                        .HasColumnType("timestamp without time zone")
                         .HasColumnName("data_scadenza");
 
                     b.Property<bool>("Letta")
@@ -431,7 +552,7 @@ namespace AssociazioneETS.API.Migrations
                         .HasColumnName("confermato");
 
                     b.Property<DateTime>("DataIscrizione")
-                        .HasColumnType("timestamp with time zone")
+                        .HasColumnType("timestamp without time zone")
                         .HasColumnName("data_iscrizione");
 
                     b.Property<int>("EventoId")
@@ -457,7 +578,10 @@ namespace AssociazioneETS.API.Migrations
 
                     b.HasIndex("SocioId");
 
-                    b.ToTable("partecipazioni_eventi");
+                    b.ToTable("partecipazioni_eventi", null, t =>
+                        {
+                            t.ExcludeFromMigrations();
+                        });
                 });
 
             modelBuilder.Entity("AssociazioneETS.API.Models.PartecipazioneRiunione", b =>
@@ -492,7 +616,55 @@ namespace AssociazioneETS.API.Migrations
 
                     b.HasIndex("SocioId");
 
-                    b.ToTable("partecipazioni_riunioni");
+                    b.ToTable("partecipazioni_riunioni", null, t =>
+                        {
+                            t.ExcludeFromMigrations();
+                        });
+                });
+
+            modelBuilder.Entity("AssociazioneETS.API.Models.PushSubscription", b =>
+                {
+                    b.Property<int>("SubscriptionId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer")
+                        .HasColumnName("subscription_id");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("SubscriptionId"));
+
+                    b.Property<string>("Auth")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("character varying(100)")
+                        .HasColumnName("auth");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("timestamp without time zone")
+                        .HasColumnName("created_at");
+
+                    b.Property<string>("Endpoint")
+                        .IsRequired()
+                        .HasMaxLength(500)
+                        .HasColumnType("character varying(500)")
+                        .HasColumnName("endpoint");
+
+                    b.Property<string>("P256dh")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("character varying(100)")
+                        .HasColumnName("p256dh");
+
+                    b.Property<int>("UserId")
+                        .HasColumnType("integer")
+                        .HasColumnName("user_id");
+
+                    b.HasKey("SubscriptionId");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("push_subscriptions", null, t =>
+                        {
+                            t.ExcludeFromMigrations();
+                        });
                 });
 
             modelBuilder.Entity("AssociazioneETS.API.Models.Riunione", b =>
@@ -505,11 +677,11 @@ namespace AssociazioneETS.API.Migrations
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("RiunioneId"));
 
                     b.Property<DateTime>("CreatedAt")
-                        .HasColumnType("timestamp with time zone")
+                        .HasColumnType("timestamp without time zone")
                         .HasColumnName("created_at");
 
                     b.Property<DateTime>("DataRiunione")
-                        .HasColumnType("timestamp with time zone")
+                        .HasColumnType("timestamp without time zone")
                         .HasColumnName("data_riunione");
 
                     b.Property<string>("Luogo")
@@ -547,7 +719,7 @@ namespace AssociazioneETS.API.Migrations
                         .HasColumnName("tipo_riunione");
 
                     b.Property<DateTime>("UpdatedAt")
-                        .HasColumnType("timestamp with time zone")
+                        .HasColumnType("timestamp without time zone")
                         .HasColumnName("updated_at");
 
                     b.Property<string>("Verbale")
@@ -556,7 +728,10 @@ namespace AssociazioneETS.API.Migrations
 
                     b.HasKey("RiunioneId");
 
-                    b.ToTable("riunioni");
+                    b.ToTable("riunioni", null, t =>
+                        {
+                            t.ExcludeFromMigrations();
+                        });
                 });
 
             modelBuilder.Entity("AssociazioneETS.API.Models.Socio", b =>
@@ -585,19 +760,19 @@ namespace AssociazioneETS.API.Migrations
                         .HasColumnName("cognome");
 
                     b.Property<DateTime>("CreatedAt")
-                        .HasColumnType("timestamp with time zone")
+                        .HasColumnType("timestamp without time zone")
                         .HasColumnName("created_at");
 
                     b.Property<DateTime?>("DataCessazione")
-                        .HasColumnType("timestamp with time zone")
+                        .HasColumnType("timestamp without time zone")
                         .HasColumnName("data_cessazione");
 
                     b.Property<DateTime>("DataIscrizione")
-                        .HasColumnType("timestamp with time zone")
+                        .HasColumnType("timestamp without time zone")
                         .HasColumnName("data_iscrizione");
 
                     b.Property<DateTime>("DataNascita")
-                        .HasColumnType("timestamp with time zone")
+                        .HasColumnType("timestamp without time zone")
                         .HasColumnName("data_nascita");
 
                     b.Property<string>("Email")
@@ -636,7 +811,7 @@ namespace AssociazioneETS.API.Migrations
                         .HasColumnName("telefono");
 
                     b.Property<DateTime>("UpdatedAt")
-                        .HasColumnType("timestamp with time zone")
+                        .HasColumnType("timestamp without time zone")
                         .HasColumnName("updated_at");
 
                     b.HasKey("SocioId");
@@ -646,7 +821,10 @@ namespace AssociazioneETS.API.Migrations
                     b.HasIndex("CodiceFiscale")
                         .IsUnique();
 
-                    b.ToTable("soci");
+                    b.ToTable("soci", null, t =>
+                        {
+                            t.ExcludeFromMigrations();
+                        });
                 });
 
             modelBuilder.Entity("AssociazioneETS.API.Models.SocioCarica", b =>
@@ -663,11 +841,11 @@ namespace AssociazioneETS.API.Migrations
                         .HasColumnName("carica_id");
 
                     b.Property<DateTime?>("DataFine")
-                        .HasColumnType("timestamp with time zone")
+                        .HasColumnType("timestamp without time zone")
                         .HasColumnName("data_fine");
 
                     b.Property<DateTime>("DataInizio")
-                        .HasColumnType("timestamp with time zone")
+                        .HasColumnType("timestamp without time zone")
                         .HasColumnName("data_inizio");
 
                     b.Property<string>("Note")
@@ -685,6 +863,47 @@ namespace AssociazioneETS.API.Migrations
                     b.HasIndex("SocioId");
 
                     b.ToTable("soci_cariche");
+                });
+
+            modelBuilder.Entity("AssociazioneETS.API.Models.TodoEvento", b =>
+                {
+                    b.Property<int>("TodoEventoId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("TodoEventoId"));
+
+                    b.Property<DateTime?>("CompletedAt")
+                        .HasColumnType("timestamp without time zone");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("timestamp without time zone");
+
+                    b.Property<string>("Descrizione")
+                        .HasColumnType("text");
+
+                    b.Property<int>("EventoId")
+                        .HasColumnType("integer");
+
+                    b.Property<string>("Priorita")
+                        .HasColumnType("text");
+
+                    b.Property<DateTime?>("Scadenza")
+                        .HasColumnType("timestamp without time zone");
+
+                    b.Property<string>("Stato")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<string>("Titolo")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.HasKey("TodoEventoId");
+
+                    b.HasIndex("EventoId");
+
+                    b.ToTable("TodoEventi");
                 });
 
             modelBuilder.Entity("AssociazioneETS.API.Models.User", b =>
@@ -706,7 +925,7 @@ namespace AssociazioneETS.API.Migrations
                         .HasColumnName("cognome");
 
                     b.Property<DateTime>("CreatedAt")
-                        .HasColumnType("timestamp with time zone")
+                        .HasColumnType("timestamp without time zone")
                         .HasColumnName("created_at");
 
                     b.Property<string>("Email")
@@ -736,11 +955,11 @@ namespace AssociazioneETS.API.Migrations
                         .HasColumnName("socio_id");
 
                     b.Property<DateTime?>("UltimoAccesso")
-                        .HasColumnType("timestamp with time zone")
+                        .HasColumnType("timestamp without time zone")
                         .HasColumnName("ultimo_accesso");
 
                     b.Property<DateTime>("UpdatedAt")
-                        .HasColumnType("timestamp with time zone")
+                        .HasColumnType("timestamp without time zone")
                         .HasColumnName("updated_at");
 
                     b.Property<string>("Username")
@@ -759,7 +978,10 @@ namespace AssociazioneETS.API.Migrations
                     b.HasIndex("Username")
                         .IsUnique();
 
-                    b.ToTable("users");
+                    b.ToTable("users", null, t =>
+                        {
+                            t.ExcludeFromMigrations();
+                        });
                 });
 
             modelBuilder.Entity("AssociazioneETS.API.Models.ArgomentoRiunione", b =>
@@ -771,6 +993,29 @@ namespace AssociazioneETS.API.Migrations
                         .IsRequired();
 
                     b.Navigation("Riunione");
+                });
+
+            modelBuilder.Entity("AssociazioneETS.API.Models.AssegnazioneTodo", b =>
+                {
+                    b.HasOne("AssociazioneETS.API.Models.Collaboratore", "Collaboratore")
+                        .WithMany()
+                        .HasForeignKey("CollaboratoreId");
+
+                    b.HasOne("AssociazioneETS.API.Models.Socio", "Socio")
+                        .WithMany()
+                        .HasForeignKey("SocioId");
+
+                    b.HasOne("AssociazioneETS.API.Models.TodoEvento", "TodoEvento")
+                        .WithMany("Assegnazioni")
+                        .HasForeignKey("TodoEventoId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Collaboratore");
+
+                    b.Navigation("Socio");
+
+                    b.Navigation("TodoEvento");
                 });
 
             modelBuilder.Entity("AssociazioneETS.API.Models.DeliberaRiunione", b =>
@@ -800,6 +1045,17 @@ namespace AssociazioneETS.API.Migrations
                         .IsRequired();
 
                     b.Navigation("Socio");
+                });
+
+            modelBuilder.Entity("AssociazioneETS.API.Models.DocumentoEvento", b =>
+                {
+                    b.HasOne("AssociazioneETS.API.Models.Evento", "Evento")
+                        .WithMany()
+                        .HasForeignKey("EventoId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Evento");
                 });
 
             modelBuilder.Entity("AssociazioneETS.API.Models.Notifica", b =>
@@ -851,6 +1107,17 @@ namespace AssociazioneETS.API.Migrations
                     b.Navigation("Socio");
                 });
 
+            modelBuilder.Entity("AssociazioneETS.API.Models.PushSubscription", b =>
+                {
+                    b.HasOne("AssociazioneETS.API.Models.User", "User")
+                        .WithMany()
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("User");
+                });
+
             modelBuilder.Entity("AssociazioneETS.API.Models.Socio", b =>
                 {
                     b.HasOne("AssociazioneETS.API.Models.Carica", "Carica")
@@ -877,6 +1144,17 @@ namespace AssociazioneETS.API.Migrations
                     b.Navigation("Carica");
 
                     b.Navigation("Socio");
+                });
+
+            modelBuilder.Entity("AssociazioneETS.API.Models.TodoEvento", b =>
+                {
+                    b.HasOne("AssociazioneETS.API.Models.Evento", "Evento")
+                        .WithMany()
+                        .HasForeignKey("EventoId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Evento");
                 });
 
             modelBuilder.Entity("AssociazioneETS.API.Models.User", b =>
@@ -924,6 +1202,11 @@ namespace AssociazioneETS.API.Migrations
                     b.Navigation("PartecipazioniRiunioni");
 
                     b.Navigation("SociCariche");
+                });
+
+            modelBuilder.Entity("AssociazioneETS.API.Models.TodoEvento", b =>
+                {
+                    b.Navigation("Assegnazioni");
                 });
 #pragma warning restore 612, 618
         }

@@ -25,6 +25,11 @@ public class ApplicationDbContext : DbContext
     public DbSet<Notifica> Notifiche { get; set; }
     public DbSet<Impostazione> Impostazioni { get; set; }
     public DbSet<PushSubscription> PushSubscriptions { get; set; }
+    public DbSet<Collaboratore> Collaboratori { get; set; }
+    public DbSet<TodoEvento> TodoEventi { get; set; }
+    public DbSet<AssegnazioneTodo> AssegnazioniTodo { get; set; }
+    public DbSet<DocumentoEvento> DocumentiEventi { get; set; }
+
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
@@ -119,6 +124,18 @@ public class ApplicationDbContext : DbContext
             .WithMany()
             .HasForeignKey(n => n.UserId)
             .OnDelete(DeleteBehavior.Cascade);
+			
+        modelBuilder.Entity<Carica>().ToTable("cariche", t => t.ExcludeFromMigrations());
+        modelBuilder.Entity<Socio>().ToTable("soci", t => t.ExcludeFromMigrations());
+        modelBuilder.Entity<Riunione>().ToTable("riunioni", t => t.ExcludeFromMigrations());
+        modelBuilder.Entity<PartecipazioneRiunione>().ToTable("partecipazioni_riunioni", t => t.ExcludeFromMigrations());
+        modelBuilder.Entity<ArgomentoRiunione>().ToTable("argomenti_riunione", t => t.ExcludeFromMigrations());
+        modelBuilder.Entity<DeliberaRiunione>().ToTable("delibere_riunione", t => t.ExcludeFromMigrations());
+        modelBuilder.Entity<Evento>().ToTable("eventi", t => t.ExcludeFromMigrations());
+        modelBuilder.Entity<PartecipazioneEvento>().ToTable("partecipazioni_eventi", t => t.ExcludeFromMigrations());
+        modelBuilder.Entity<User>().ToTable("users", t => t.ExcludeFromMigrations());
+        modelBuilder.Entity<Impostazione>().ToTable("impostazioni", t => t.ExcludeFromMigrations());
+        modelBuilder.Entity<PushSubscription>().ToTable("push_subscriptions", t => t.ExcludeFromMigrations());
 
         // Seed data iniziale
         SeedData(modelBuilder);
