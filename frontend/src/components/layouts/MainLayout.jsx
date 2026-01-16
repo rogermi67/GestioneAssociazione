@@ -27,6 +27,7 @@ const menuItems = [
   { name: 'Cariche', icon: FiAward, path: '/cariche', adminOnly: false },
   { name: 'Calendario', icon: FiCalendar, path: '/calendario', adminOnly: false },
   { name: 'Utenti', icon: FiUserCheck, path: '/utenti', adminOnly: true },
+  { name: 'Collaboratori', icon: FiUserCheck, path: '/collaboratori', adminOnly: true },
   { name: 'Notifiche Push', icon: FiBell, path: '/notifiche', adminOnly: true },  // <-- AGGIUNGI QUESTA
   { name: 'Impostazioni', icon: FiSettings, path: '/impostazioni', adminOnly: false },
 ]
