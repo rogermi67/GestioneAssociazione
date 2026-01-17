@@ -63,7 +63,8 @@ public decimal? Incassi { get; set; }
 
     // Navigation properties
     public virtual ICollection<PartecipazioneEvento> Partecipazioni { get; set; } = new List<PartecipazioneEvento>();
-
+    public virtual ICollection<TodoEvento> TodoEventi { get; set; } = new List<TodoEvento>();
+	
     [NotMapped]
     public int NumeroPartecipanti => Partecipazioni.Count;
 

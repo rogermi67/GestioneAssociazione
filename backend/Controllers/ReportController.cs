@@ -28,10 +28,10 @@ namespace AssociazioneETS.API.Controllers
         public async Task<IActionResult> GetEventoPdf(int id)
         {
             var evento = await _context.Eventi
-                .Include(e => e.Todos)
+                .Include(e => e.TodoEventi)
                     .ThenInclude(t => t.Assegnazioni)
                         .ThenInclude(a => a.Socio)
-                .Include(e => e.Todos)
+                .Include(e => e.TodoEventi)
                     .ThenInclude(t => t.Assegnazioni)
                         .ThenInclude(a => a.Collaboratore)
                 .FirstOrDefaultAsync(e => e.EventoId == id);
@@ -143,9 +143,9 @@ namespace AssociazioneETS.API.Controllers
                             // Todo List
                             col.Item().PaddingTop(20).Text("Todo List").SemiBold().FontSize(14);
                             
-                            if (evento.Todos != null && evento.Todos.Any())
+                            if (evento.TodoEventi != null && evento.TodoEventi.Any())
                             {
-                                foreach (var todo in evento.Todos.OrderBy(t => t.Scadenza))
+                                foreach (var todo in evento.TodoEventi.OrderBy(t => t.Scadenza))
                                 {
                                     col.Item().PaddingTop(10).BorderBottom(1).BorderColor(Colors.Grey.Lighten2)
                                         .PaddingBottom(5).Column(todoCol =>
@@ -361,10 +361,10 @@ namespace AssociazioneETS.API.Controllers
         public async Task<IActionResult> SendEventoEmail(int id)
         {
             var evento = await _context.Eventi
-                .Include(e => e.Todos)
+                .Include(e => e.TodoEventi)
                     .ThenInclude(t => t.Assegnazioni)
                         .ThenInclude(a => a.Socio)
-                .Include(e => e.Todos)
+                .Include(e => e.TodoEventi)
                     .ThenInclude(t => t.Assegnazioni)
                         .ThenInclude(a => a.Collaboratore)
                 .FirstOrDefaultAsync(e => e.EventoId == id);
@@ -375,9 +375,9 @@ namespace AssociazioneETS.API.Controllers
             // Raccogli tutte le email delle persone assegnate
             var emails = new HashSet<string>();
             
-            if (evento.Todos != null)
+            if (evento.TodoEventi != null)
             {
-                foreach (var todo in evento.Todos)
+                foreach (var todo in evento.TodoEventi)
                 {
                     if (todo.Assegnazioni != null)
                     {

@@ -4,9 +4,16 @@ using MimeKit;
 
 namespace AssociazioneETS.API.Services;
 
+public class EmailAttachment
+{
+    public string FileName { get; set; } = string.Empty;
+    public byte[] Content { get; set; } = Array.Empty<byte>();
+    public string ContentType { get; set; } = "application/octet-stream";
+}
+
 public interface IEmailService
 {
-    Task<bool> SendEmailAsync(string to, string subject, string body);
+    Task<bool> SendEmailAsync(string to, string subject, string body, List<EmailAttachment>? attachments = null);
     Task<bool> TestConnectionAsync();
 }
 
@@ -29,7 +36,7 @@ public class EmailService : IEmailService
         _fromName = configuration["Email:FromName"] ?? "Associazione ETS";
     }
 
-    public async Task<bool> SendEmailAsync(string to, string subject, string body)
+    public async Task<bool> SendEmailAsync(string to, string subject, string body, List<EmailAttachment>? attachments = null)
     {
         try
         {
@@ -42,6 +49,16 @@ public class EmailService : IEmailService
             {
                 HtmlBody = body
             };
+
+            // Aggiungi allegati se presenti
+            if (attachments != null && attachments.Any())
+            {
+                foreach (var attachment in attachments)
+                {
+                    bodyBuilder.Attachments.Add(attachment.FileName, attachment.Content, ContentType.Parse(attachment.ContentType));
+                }
+            }
+
             message.Body = bodyBuilder.ToMessageBody();
 
             using var client = new SmtpClient();
