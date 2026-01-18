@@ -1,7 +1,8 @@
 import { useState, useEffect } from 'react'
 import { todoEventiAPI, sociAPI, collaboratoriAPI } from '../services/api'
 import { toast } from 'react-toastify'
-import { FiPlus, FiCheck, FiTrash2, FiUser, FiClock, FiUserPlus, FiX } from 'react-icons/fi'
+import { FiPlus, FiCheck, FiTrash2, FiUser, FiClock, FiUserPlus, FiX, FiDownload, FiMail } from 'react-icons/fi'
+import { todoEventiAPI, sociAPI, collaboratoriAPI, reportAPI } from '../services/api'
 
 export default function TodoList({ eventoId }) {
   const [todos, setTodos] = useState([])
@@ -125,6 +126,31 @@ export default function TodoList({ eventoId }) {
     }
   }
 
+const handleDownloadTodoPdf = async (todo) => {
+    try {
+      const response = await reportAPI.downloadTodoPdf(todo.todoEventoId)
+      const url = window.URL.createObjectURL(new Blob([response.data]))
+      const link = document.createElement('a')
+      link.href = url
+      link.download = `Todo_${todo.titolo.replace(/ /g, '_')}.pdf`
+      link.click()
+      toast.success('PDF scaricato')
+    } catch (error) {
+      toast.error('Errore download PDF')
+    }
+  }
+
+  const handleSendTodoEmail = async (todo) => {
+    if (!window.confirm('Inviare il todo via email alle persone assegnate?')) return
+    
+    try {
+      const response = await reportAPI.sendTodoEmail(todo.todoEventoId)
+      toast.success(response.data.message || 'Email inviate')
+    } catch (error) {
+      toast.error(error.response?.data?.message || 'Errore invio email')
+    }
+  }
+
   const getPrioritaColor = (priorita) => {
     switch (priorita) {
       case 'Alta': return 'text-red-600 bg-red-100'
@@ -215,9 +241,29 @@ export default function TodoList({ eventoId }) {
                 </div>
               </div>
 
-              <button onClick={() => handleDelete(todo.todoEventoId)} className="text-red-600 hover:text-red-800 flex-shrink-0">
-                <FiTrash2 size={18} />
-              </button>
+              <div className="flex items-center gap-2 flex-shrink-0">
+                <button
+                  onClick={() => handleDownloadTodoPdf(todo)}
+                  className="text-blue-600 hover:text-blue-800"
+                  title="Scarica PDF"
+                >
+                  <FiDownload size={16} />
+                </button>
+                <button
+                  onClick={() => handleSendTodoEmail(todo)}
+                  className="text-green-600 hover:text-green-800"
+                  title="Invia Email"
+                >
+                  <FiMail size={16} />
+                </button>
+                <button
+                  onClick={() => handleDelete(todo.todoEventoId)}
+                  className="text-red-600 hover:text-red-800"
+                  title="Elimina"
+                >
+                  <FiTrash2 size={18} />
+                </button>
+              </div>
             </div>
           </div>
         ))}
