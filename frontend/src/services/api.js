@@ -221,4 +221,32 @@ export const pushNotificationAPI = {
   unsubscribe: () => api.delete('/pushnotification/unsubscribe')
 }
 
+// Report API  ← AGGIUNGI DA QUI
+export const reportAPI = {
+  // PDF Downloads
+  downloadEventoPdf: (eventoId) => 
+    api.get(`/report/evento/${eventoId}/pdf`, { responseType: 'blob' }),
+  
+  downloadTodoPdf: (todoId) => 
+    api.get(`/report/todo/${todoId}/pdf`, { responseType: 'blob' }),
+  
+  downloadPersonaPdf: (tipo, personaId, eventoIds, stato) => 
+    api.get('/report/persona/pdf', { 
+      params: { tipo, personaId, eventoIds, stato },
+      responseType: 'blob' 
+    }),
+  
+  // Email Sends
+  sendEventoEmail: (eventoId) => 
+    api.post(`/report/evento/${eventoId}/email`),
+  
+  sendTodoEmail: (todoId) => 
+    api.post(`/report/todo/${todoId}/email`),
+  
+  sendPersonaEmail: (tipo, personaId, eventoIds, stato) => 
+    api.post('/report/persona/email', null, { 
+      params: { tipo, personaId, eventoIds, stato }
+    })
+}
 
+export default api  ← AGGIUNGI ANCHE QUESTA RIGA SE NON C'È

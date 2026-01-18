@@ -1,8 +1,8 @@
 import { useState, useEffect } from 'react'
 import { useParams, useNavigate, Link } from 'react-router-dom'
-import { eventiAPI } from '../../services/api'
+import { eventiAPI, reportAPI } from '../../services/api'
 import { toast } from 'react-toastify'
-import { FiEdit2, FiTrash2, FiArrowLeft, FiCalendar, FiMapPin, FiDollarSign } from 'react-icons/fi'
+import { FiEdit2, FiTrash2, FiArrowLeft, FiCalendar, FiMapPin, FiDownload, FiMail } from 'react-icons/fi'
 import TodoList from '../../components/TodoList'
 import DocumentiEvento from '../../components/DocumentiEvento'
 
@@ -40,6 +40,31 @@ export default function EventoDetail() {
     }
   }
 
+  const handleDownloadPdf = async () => {
+    try {
+      const response = await reportAPI.downloadEventoPdf(id)
+      const url = window.URL.createObjectURL(new Blob([response.data]))
+      const link = document.createElement('a')
+      link.href = url
+      link.download = `Evento_${evento.titolo.replace(/ /g, '_')}.pdf`
+      link.click()
+      toast.success('PDF scaricato con successo')
+    } catch (error) {
+      toast.error('Errore nel download del PDF')
+    }
+  }
+
+  const handleSendEmail = async () => {
+    if (!window.confirm('Inviare il report via email a tutte le persone assegnate ai todo?')) return
+    
+    try {
+      const response = await reportAPI.sendEventoEmail(id)
+      toast.success(response.data.message || 'Email inviate con successo')
+    } catch (error) {
+      toast.error(error.response?.data?.message || 'Errore nell\'invio delle email')
+    }
+  }
+
   if (loading) {
     return <div className="text-center py-8">Caricamento...</div>
   }
@@ -51,29 +76,47 @@ export default function EventoDetail() {
   return (
     <div>
       {/* Header */}
-      <div className="flex items-center justify-between mb-6">
-        <div className="flex items-center gap-4">
-          <button
-            onClick={() => navigate('/eventi')}
-            className="text-gray-600 hover:text-gray-900"
-          >
-            <FiArrowLeft size={24} />
-          </button>
-          <h1 className="text-3xl font-bold text-gray-900">{evento.titolo}</h1>
+      <div className="mb-6">
+        <div className="flex items-center justify-between mb-4">
+          <div className="flex items-center gap-4">
+            <button
+              onClick={() => navigate('/eventi')}
+              className="text-gray-600 hover:text-gray-900"
+            >
+              <FiArrowLeft size={24} />
+            </button>
+            <h1 className="text-3xl font-bold text-gray-900">{evento.titolo}</h1>
+          </div>
+          
+          <div className="flex gap-2">
+            <Link
+              to={`/eventi/${id}/modifica`}
+              className="btn-primary flex items-center gap-2"
+            >
+              <FiEdit2 /> Modifica
+            </Link>
+            <button
+              onClick={handleDelete}
+              className="btn-secondary text-red-600 hover:bg-red-50 flex items-center gap-2"
+            >
+              <FiTrash2 /> Elimina
+            </button>
+          </div>
         </div>
-        
-        <div className="flex gap-2">
-          <Link
-            to={`/eventi/${id}/modifica`}
-            className="btn-primary flex items-center gap-2"
-          >
-            <FiEdit2 /> Modifica
-          </Link>
+
+        {/* Report Buttons */}
+        <div className="flex gap-2 ml-12">
           <button
-            onClick={handleDelete}
-            className="btn-secondary text-red-600 hover:bg-red-50 flex items-center gap-2"
+            onClick={handleDownloadPdf}
+            className="btn-secondary flex items-center gap-2 text-sm"
           >
-            <FiTrash2 /> Elimina
+            <FiDownload size={16} /> Scarica PDF
+          </button>
+          <button
+            onClick={handleSendEmail}
+            className="btn-secondary flex items-center gap-2 text-sm"
+          >
+            <FiMail size={16} /> Invia Email a Tutti
           </button>
         </div>
       </div>
@@ -182,13 +225,13 @@ export default function EventoDetail() {
 
       {/* Note */}
       {evento.note && (
-        <div className="card">
+        <div className="card mb-6">
           <h3 className="text-lg font-semibold mb-3">Note</h3>
           <p className="text-gray-700 whitespace-pre-wrap">{evento.note}</p>
         </div>
       )}
 	  
-	        {/* Todo e Documenti */}
+      {/* Todo e Documenti */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mt-6">
         <TodoList eventoId={id} />
         <DocumentiEvento eventoId={id} />
