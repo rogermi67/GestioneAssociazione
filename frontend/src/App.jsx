@@ -24,6 +24,7 @@ import EventoForm from './pages/eventi/EventoForm'
 import EventoDetail from './pages/eventi/EventoDetail'
 import Collaboratori from './pages/collaboratori/Collaboratori'
 import CollaboratoreForm from './pages/collaboratori/CollaboratoreForm'
+import Reports from './pages/Reports'  // ← AGGIUNGI QUESTA
 
 
 function ProtectedRoute({ children }) {
@@ -88,6 +89,7 @@ function App() {
 		  <Route path="/collaboratori" element={<Collaboratori />} />
           <Route path="/collaboratori/nuovo" element={<CollaboratoreForm />} />
           <Route path="/collaboratori/:id/modifica" element={<CollaboratoreForm />} />
+		  <Route path="/reports" element={<Reports />} />  {/* ← AGGIUNGI QUESTA */}
         </Route>
       </Routes>
       

@@ -3,7 +3,7 @@ import { useAuthStore } from '../../stores/authStore'
 import AdminOnly from '../AdminOnly'
 import { 
   FiHome, FiUsers, FiCalendar, FiFileText, 
-  FiSettings, FiLogOut, FiMenu, FiX, FiAward, FiUserCheck, FiBell
+  FiSettings, FiLogOut, FiMenu, FiX, FiAward, FiUserCheck, FiBell, FiBarChart
 } from 'react-icons/fi'
 import { useState } from 'react'
 
@@ -23,12 +23,13 @@ const menuItems = [
   { name: 'Dashboard', icon: FiHome, path: '/', adminOnly: false },
   { name: 'Soci', icon: FiUsers, path: '/soci', adminOnly: false },
   { name: 'Riunioni', icon: FiFileText, path: '/riunioni', adminOnly: false },
-  { name: 'Eventi', icon: FiCalendar, path: '/eventi', adminOnly: false },  // <-- AGGIUNGI
+  { name: 'Eventi', icon: FiCalendar, path: '/eventi', adminOnly: false },
   { name: 'Cariche', icon: FiAward, path: '/cariche', adminOnly: false },
   { name: 'Calendario', icon: FiCalendar, path: '/calendario', adminOnly: false },
   { name: 'Utenti', icon: FiUserCheck, path: '/utenti', adminOnly: true },
   { name: 'Collaboratori', icon: FiUserCheck, path: '/collaboratori', adminOnly: true },
-  { name: 'Notifiche Push', icon: FiBell, path: '/notifiche', adminOnly: true },  // <-- AGGIUNGI QUESTA
+  { name: 'Notifiche Push', icon: FiBell, path: '/notifiche', adminOnly: true },
+  { name: 'Reports', icon: FiBarChart, path: '/reports', adminOnly: false },
   { name: 'Impostazioni', icon: FiSettings, path: '/impostazioni', adminOnly: false },
 ]
 
